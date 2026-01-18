@@ -104,7 +104,7 @@ class RoleManagementServiceTest {
     @Test
     void testCreateRole() {
         RoleCreateRequest request = new RoleCreateRequest();
-        request.setApplicationName("NEW_ROLE");
+        request.setName("NEW_ROLE");
         request.setDescription("New Role Description");
 
         when(roleRepository.save(any(Role.class))).thenReturn(testRole);

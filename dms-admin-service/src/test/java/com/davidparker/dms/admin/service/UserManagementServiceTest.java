@@ -62,7 +62,7 @@ class UserManagementServiceTest {
 
         testRole = Role.builder()
             .id(roleId)
-            .applicationName("TEST_ROLE")
+            .name("TEST_ROLE")
             .description("Test Role")
             .permissions(new HashSet<>())
             .createdAt(Instant.now())
