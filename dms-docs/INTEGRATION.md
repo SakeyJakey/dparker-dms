@@ -1,5 +1,5 @@
 ---
-Last Updated: 2024-01-18T13:32:00Z
+Last Updated: 2025-01-18T00:00:00Z
 Updated By: davidparker-lv-bmth
 ---
 
@@ -192,9 +192,15 @@ Services discover each other using Kubernetes DNS:
 {service-name}.{namespace}.svc.cluster.local:{port}
 ```
 
-**Example**:
-- `dms-admin-service.dms.svc.cluster.local:8081`
-- `dms-document-service.dms.svc.cluster.local:8083`
+**Example (Kubernetes - all services use port 8080)**:
+- `dms-admin-service.dms.svc.cluster.local:8080`
+- `dms-document-service.dms.svc.cluster.local:8080`
+- `dms-audit-service.dms.svc.cluster.local:8080`
+
+**Example (Docker Compose - unique ports)**:
+- `dms-admin-service:8081`
+- `dms-document-service:8083`
+- `dms-audit-service:8082`
 
 ### Inter-Service Call Pattern
 
@@ -206,9 +212,13 @@ public class DocumentService {
     
     public Document uploadDocument(UUID applicationId, MultipartFile file) {
         // Verify application exists
+        // In Kubernetes: dms-admin-service:8080
+        // In Docker Compose: dms-admin-service:8081
+        String adminServiceUrl = System.getenv().getOrDefault("ADMIN_SERVICE_URL", 
+            "http://dms-admin-service:8080");
         adminServiceClient
             .get()
-            .uri("http://dms-admin-service:8081/api/v1/admin/applications/{id}", applicationId)
+            .uri(adminServiceUrl + "/api/v1/admin/applications/{id}", applicationId)
             .retrieve()
             .bodyToMono(Application.class)
             .block();
@@ -258,7 +268,9 @@ azure:
     uri: https://dms-keyvault-dev.vault.azure.net/
     enabled: true
     secrets:
-      - database-connection-string
+      - SPRING_DATASOURCE_URL
+      - DB_USER
+      - DB_PASSWORD
       - redis-password
       - blob-storage-key
 ```
@@ -680,4 +692,5 @@ class DocumentServiceIntegrationTest {
 
 ---
 
-*Last Updated: 2024*
+*Last Updated: 2025-01-18T00:00:00Z*  
+*Updated By: davidparker-lv-bmth*

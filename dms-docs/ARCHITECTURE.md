@@ -1,5 +1,5 @@
 ---
-Last Updated: 2024-01-18T13:32:00Z
+Last Updated: 2025-01-18T00:00:00Z
 Updated By: davidparker-lv-bmth
 ---
 
@@ -37,11 +37,11 @@ graph TB
             end
             
             subgraph "Backend Services"
-                ADMIN[dms-admin-service<br/>Port 8081]
-                DOC[dms-document-service<br/>Port 8083]
-                AUDIT[dms-audit-service<br/>Port 8082]
-                COMPLIANCE[dms-compliance-service<br/>Port 8084]
-                LLM[dms-llm-service<br/>Port 8085]
+                ADMIN[dms-admin-service<br/>Dev: 8081 / Prod: 8080]
+                DOC[dms-document-service<br/>Dev: 8083 / Prod: 8080]
+                AUDIT[dms-audit-service<br/>Dev: 8082 / Prod: 8080]
+                COMPLIANCE[dms-compliance-service<br/>Dev: 8084 / Prod: 8080]
+                LLM[dms-llm-service<br/>Dev: 8085 / Prod: 8080]
             end
             
             subgraph "Shared Library"
@@ -197,9 +197,11 @@ graph TD
 
 ### dms-admin-service
 
-**Port**: 8081  
+**Ports**: 8081 (dev/docker-compose), 8080 (production/Kubernetes)  
 **Database**: `dms_admin` (PostgreSQL)  
-**Purpose**: User, role, permission, and application management
+**Purpose**: User, role, permission, and application management  
+**POM Parent**: `com.davidparker.dms:dms-parent:1.0.0-SNAPSHOT`  
+**Configuration**: Multiple profiles (dev, docker, prod, test)
 
 **Endpoints**:
 - `/api/v1/admin/users` - User management
@@ -225,9 +227,11 @@ graph LR
 
 ### dms-document-service
 
-**Port**: 8083  
+**Ports**: 8083 (dev/docker-compose), 8080 (production/Kubernetes)  
 **Database**: `dms_document` (PostgreSQL)  
-**Purpose**: Document CRUD operations and versioning
+**Purpose**: Document CRUD operations and versioning  
+**POM Parent**: `com.davidparker.dms:dms-parent:1.0.0-SNAPSHOT`  
+**Configuration**: Multiple profiles (dev, docker, prod, test)
 
 **Endpoints**:
 - `/api/v1/documents` - Document operations
@@ -262,9 +266,11 @@ graph TD
 
 ### dms-audit-service
 
-**Port**: 8082  
+**Ports**: 8082 (dev/docker-compose), 8080 (production/Kubernetes)  
 **Database**: `dms_audit` (PostgreSQL, partitioned)  
-**Purpose**: Centralized audit logging
+**Purpose**: Centralized audit logging  
+**POM Parent**: `com.davidparker.dms:dms-parent:1.0.0-SNAPSHOT`  
+**Configuration**: Multiple profiles (dev, docker, prod, test)
 
 **Features**:
 - Receives audit events from all services
@@ -286,9 +292,11 @@ graph LR
 
 ### dms-compliance-service
 
-**Port**: 8084  
+**Ports**: 8084 (dev/docker-compose), 8080 (production/Kubernetes)  
 **Database**: None (stateless)  
-**Purpose**: Compliance framework (PCI-DSS, GDPR, ISO 27001)
+**Purpose**: Compliance framework (PCI-DSS, GDPR, ISO 27001)  
+**POM Parent**: `com.davidparker.dms:dms-parent:1.0.0-SNAPSHOT`  
+**Configuration**: Multiple profiles (dev, docker, prod, test)
 
 **Endpoints**:
 - `/api/v1/compliance/pci/report` - PCI compliance reports
@@ -319,9 +327,11 @@ graph TD
 
 ### dms-llm-service
 
-**Port**: 8085  
+**Ports**: 8085 (dev/docker-compose), 8080 (production/Kubernetes)  
 **Database**: None (uses Azure AI Search)  
-**Purpose**: AI/LLM integration for document queries
+**Purpose**: AI/LLM integration for document queries  
+**POM Parent**: `com.davidparker.dms:dms-parent:1.0.0-SNAPSHOT`  
+**Configuration**: Multiple profiles (dev, docker, prod, test)
 
 **Endpoints**:
 - `/api/v1/llm/query` - Natural language document queries
@@ -349,9 +359,10 @@ graph LR
 
 ### dms-frontend-service
 
-**Port**: 80  
+**Port**: 8080 (all environments)  
 **Type**: Angular 21 SPA  
-**Purpose**: User interface for all DMS functionality
+**Purpose**: User interface for all DMS functionality  
+**Entrypoint**: `entrypoint.sh` for nginx configuration substitution
 
 **Features**:
 - MSAL authentication (Azure AD)
@@ -638,6 +649,57 @@ graph TD
 
 ---
 
+## Configuration Patterns
+
+### Environment Variables
+
+All services use standardized LV environment variables:
+
+**Database Configuration**:
+- `SPRING_DATASOURCE_URL` - Full JDBC connection string
+- `DB_USER` - Database username
+- `DB_PASSWORD` - Database password
+
+**Service URLs**:
+- `ADMIN_SERVICE_URL` - Admin service endpoint
+- `AUDIT_SERVICE_URL` - Audit service endpoint
+- `DOCUMENT_SERVICE_URL` - Document service endpoint
+- `COMPLIANCE_SERVICE_URL` - Compliance service endpoint
+- `LLM_SERVICE_URL` - LLM service endpoint
+
+**Azure AD Configuration**:
+- `AZURE_TENANT_ID` - Azure AD tenant ID
+- `AZURE_CLIENT_ID` - Azure AD client ID
+- `AZURE_JWK_SET_URI` - JWK Set URI for token validation
+
+### Application Profiles
+
+Each service supports multiple Spring profiles:
+
+- **dev** - Local development with H2 in-memory database, authentication bypass
+- **docker** - Docker Compose environment with PostgreSQL, authentication bypass
+- **prod** - Production/Kubernetes with full security, PostgreSQL, Azure AD
+- **test** - Test environment with H2 in-memory database
+
+### POM Inheritance
+
+All services inherit from the parent POM:
+```xml
+<parent>
+    <groupId>com.davidparker.dms</groupId>
+    <artifactId>dms-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+</parent>
+```
+
+### Dockerfile Patterns
+
+Each service has three Dockerfile variants:
+- **Dockerfile** - Standard multi-stage build for docker-compose
+- **Dockerfile.dev** - Development build with docker profile
+- **Dockerfile.prod** - Production build with OpenTelemetry, expects pre-built JAR
+
 ## Technology Stack Summary
 
 | Component | Technology |
@@ -655,7 +717,10 @@ graph TD
 | **AI Services** | Azure AI Search, Azure AI Foundry |
 | **Messaging** | Azure Event Hubs |
 | **Secrets** | Azure Key Vault |
+| **Build Tool** | Maven (parent POM pattern) |
+| **Observability** | OpenTelemetry (production) |
 
 ---
 
-*Last Updated: 2024*
+*Last Updated: 2025-01-18T00:00:00Z*  
+*Updated By: davidparker-lv-bmth*

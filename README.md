@@ -25,6 +25,23 @@ This monorepo contains all DMS services and will be split into individual reposi
 - **Azure Services**: Key Vault, Blob Storage, AI Search, Event Hubs
 - **Docker**: Containerization
 - **Kubernetes**: Container orchestration
+- **Service Mesh**: Istio
+- **GitOps**: Flux
+- **Cloud Platform**: Azure AKS
+
+## Configuration Standards
+
+All services follow LV standard patterns:
+
+- **POM Inheritance**: All services inherit from `com.davidparker.dms:dms-parent:1.0.0-SNAPSHOT`
+- **Environment Variables**: 
+  - Database: `SPRING_DATASOURCE_URL`, `DB_USER`, `DB_PASSWORD`
+  - Service URLs: `ADMIN_SERVICE_URL`, `AUDIT_SERVICE_URL`, etc.
+- **Application Profiles**: `dev`, `docker`, `prod`, `test`
+- **Ports**: 
+  - Development/Docker Compose: 8081-8085 (unique per service)
+  - Production/Kubernetes: 8080 (standardized)
+- **Dockerfiles**: Multi-stage builds with `Dockerfile`, `Dockerfile.dev`, `Dockerfile.prod`
 
 ## Quick Start with Docker Compose
 
@@ -46,12 +63,13 @@ This monorepo contains all DMS services and will be split into individual reposi
    ```
 
 3. **Access services**:
-   - Frontend: http://localhost:80
+   - Frontend: http://localhost:8080
    - Admin Service: http://localhost:8081
    - Audit Service: http://localhost:8082
    - Document Service: http://localhost:8083
    - Compliance Service: http://localhost:8084
    - LLM Service: http://localhost:8085
+   - API Gateway: http://localhost:8080
 
 4. **Stop services**:
    ```bash
