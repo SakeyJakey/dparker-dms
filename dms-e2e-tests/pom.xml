@@ -7,8 +7,9 @@
 
     <parent>
         <groupId>com.davidparker.dms</groupId>
-        <artifactId>dparker-dms</artifactId>
-        <version>1.0.0</version>
+        <artifactId>dms-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>e2e-tests</artifactId>
