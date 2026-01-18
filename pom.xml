@@ -12,19 +12,34 @@
         <relativePath/>
     </parent>
     
-    <groupId>com.davidparker</groupId>
-    <artifactId>dms-api</artifactId>
+    <groupId>com.davidparker.dms</groupId>
+    <artifactId>dms-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Document Management System API</name>
-    <description>Enterprise DMS with RBAC, multi-application isolation, LLM query support, and PCI-DSS/ISO 27001/GDPR compliance</description>
+    <packaging>pom</packaging>
+    <name>DMS Parent POM</name>
+    <description>Parent POM for DMS microservices - Shared configuration and dependency management</description>
+    
+    <modules>
+        <module>dms-core-service</module>
+        <module>dms-admin-service</module>
+        <module>dms-document-service</module>
+        <module>dms-audit-service</module>
+        <module>dms-compliance-service</module>
+        <module>dms-llm-service</module>
+        <module>e2e-tests</module>
+    </modules>
     
     <properties>
         <java.version>25</java.version>
         <spring-cloud-azure.version>5.20.0</spring-cloud-azure.version>
         <azure-sdk.version>1.48.0</azure-sdk.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
-    <dependencies>
+    <dependencyManagement>
+        <dependencies>
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -145,22 +160,6 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
-    
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+        </dependencies>
+    </dependencyManagement>
 </project>

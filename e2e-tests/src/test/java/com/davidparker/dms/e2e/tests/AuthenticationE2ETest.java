@@ -1,6 +1,7 @@
 package com.davidparker.dms.e2e.tests;
 
 import com.davidparker.dms.e2e.base.BaseE2ETest;
+import com.davidparker.dms.e2e.config.TestConfig;
 import com.davidparker.dms.e2e.pages.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
