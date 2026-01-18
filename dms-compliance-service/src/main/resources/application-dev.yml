@@ -1,0 +1,12 @@
+# Development profile
+server:
+  port: 8084
+
+# Bypass authentication in dev mode
+security:
+  bypass-auth: true
+
+logging:
+  level:
+    com.davidparker.dms.compliance: DEBUG
+    org.springframework.security: DEBUG

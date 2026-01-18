@@ -75,19 +75,49 @@ services:
     networks:
       - dms-network
 
+  # DMS API Gateway Service
+  dms-api-gateway-service:
+    build:
+      context: .
+      dockerfile: dms-api-gateway-service/Dockerfile
+    container_name: dms-api-gateway-service
+    environment:
+      PORT: 8080
+      SPRING_PROFILES_ACTIVE: docker
+      ADMIN_SERVICE_URL: http://dms-admin-service:8081
+      AUDIT_SERVICE_URL: http://dms-audit-service:8082
+      DOCUMENT_SERVICE_URL: http://dms-document-service:8083
+      COMPLIANCE_SERVICE_URL: http://dms-compliance-service:8084
+      LLM_SERVICE_URL: http://dms-llm-service:8085
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dms-admin-service
+      - dms-audit-service
+      - dms-document-service
+      - dms-compliance-service
+      - dms-llm-service
+    networks:
+      - dms-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   # DMS Admin Service
   dms-admin-service:
     build:
-      context: ./dms-admin-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: dms-admin-service/Dockerfile
     container_name: dms-admin-service
     environment:
       PORT: 8081
-      ENVIRONMENT: dev
-      SPRING_PROFILES_ACTIVE: dev
-      database-connection-string: jdbc:postgresql://postgres-admin:5432/dms_admin
-      database-username: postgres
-      database-password: postgres
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-admin:5432/dms_admin
+      DB_USER: postgres
+      DB_PASSWORD: postgres
       redis-host: redis
       redis-port: 6379
       redis-password: ""
@@ -102,25 +132,24 @@ services:
     networks:
       - dms-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8081/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
   # DMS Audit Service
   dms-audit-service:
     build:
-      context: ./dms-audit-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: dms-audit-service/Dockerfile
     container_name: dms-audit-service
     environment:
       PORT: 8082
-      ENVIRONMENT: dev
-      SPRING_PROFILES_ACTIVE: dev
-      database-connection-string: jdbc:postgresql://postgres-audit:5432/dms_audit
-      database-username: postgres
-      database-password: postgres
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-audit:5432/dms_audit
+      DB_USER: postgres
+      DB_PASSWORD: postgres
       event-hubs-connection-string: ""
     ports:
       - "8082:8082"
@@ -130,25 +159,24 @@ services:
     networks:
       - dms-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8082/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
   # DMS Document Service
   dms-document-service:
     build:
-      context: ./dms-document-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: dms-document-service/Dockerfile
     container_name: dms-document-service
     environment:
       PORT: 8083
-      ENVIRONMENT: dev
-      SPRING_PROFILES_ACTIVE: dev
-      database-connection-string: jdbc:postgresql://postgres-document:5432/dms_document
-      database-username: postgres
-      database-password: postgres
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-document:5432/dms_document
+      DB_USER: postgres
+      DB_PASSWORD: postgres
       ADMIN_SERVICE_URL: http://dms-admin-service:8081
       AUDIT_SERVICE_URL: http://dms-audit-service:8082
       LLM_SERVICE_URL: http://dms-llm-service:8085
@@ -163,22 +191,21 @@ services:
     networks:
       - dms-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8083/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
   # DMS Compliance Service
   dms-compliance-service:
     build:
-      context: ./dms-compliance-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: dms-compliance-service/Dockerfile
     container_name: dms-compliance-service
     environment:
       PORT: 8084
-      ENVIRONMENT: dev
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: docker
       ADMIN_SERVICE_URL: http://dms-admin-service:8081
       DOCUMENT_SERVICE_URL: http://dms-document-service:8083
       AUDIT_SERVICE_URL: http://dms-audit-service:8082
@@ -192,22 +219,21 @@ services:
     networks:
       - dms-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8084/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
   # DMS LLM Service
   dms-llm-service:
     build:
-      context: ./dms-llm-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: dms-llm-service/Dockerfile
     container_name: dms-llm-service
     environment:
       PORT: 8085
-      ENVIRONMENT: dev
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: docker
       DOCUMENT_SERVICE_URL: http://dms-document-service:8083
       AUDIT_SERVICE_URL: http://dms-audit-service:8082
       AZURE_AI_SEARCH_ENDPOINT: ""
@@ -222,11 +248,11 @@ services:
     networks:
       - dms-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8085/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
   # DMS Frontend Service
   dms-frontend-service:
@@ -234,9 +260,12 @@ services:
       context: ./dms-frontend-service
       dockerfile: Dockerfile
     container_name: dms-frontend-service
+    environment:
+      API_GATEWAY_URL: http://dms-api-gateway-service:8080
     ports:
-      - "80:80"
+      - "8080:8080"
     depends_on:
+      - dms-api-gateway-service
       - dms-admin-service
       - dms-document-service
       - dms-compliance-service
@@ -244,7 +273,7 @@ services:
     networks:
       - dms-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

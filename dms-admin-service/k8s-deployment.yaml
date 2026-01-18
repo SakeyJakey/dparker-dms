@@ -33,15 +33,38 @@ spec:
           value: "8080"
         - name: SERVER_PORT
           value: "8080"
-        - name: ENVIRONMENT
-          value: dev
         - name: SPRING_PROFILES_ACTIVE
-          value: dev
-        - name: DATABASE_URL
+          value: prod
+        - name: SPRING_DATASOURCE_URL
           valueFrom:
             secretKeyRef:
               name: dms-secrets
               key: database-url
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: dms-secrets
+              key: db-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dms-secrets
+              key: db-password
+        - name: AZURE_TENANT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: dms-azure-configmap
+              key: AZURE_TENANT_ID
+        - name: AZURE_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: dms-azure-configmap
+              key: AZURE_CLIENT_ID
+        - name: AZURE_JWK_SET_URI
+          valueFrom:
+            configMapKeyRef:
+              name: dms-azure-configmap
+              key: AZURE_JWK_SET_URI
         - name: AUDIT_SERVICE_URL
           valueFrom:
             configMapKeyRef:

@@ -1,0 +1,11 @@
+# Docker Compose profile
+server:
+  port: 8084
+
+# Bypass authentication in docker mode for local testing
+security:
+  bypass-auth: true
+
+logging:
+  level:
+    com.davidparker.dms.compliance: DEBUG

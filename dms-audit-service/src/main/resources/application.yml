@@ -11,9 +11,10 @@ spring:
               endpoint: https://dms-keyvault-${ENVIRONMENT:dev}.vault.azure.net
   
   datasource:
-    url: ${database-connection-string:jdbc:postgresql://localhost:5432/dms_audit}
-    username: ${database-username:postgres}
-    password: ${database-password:postgres}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/dms_audit}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
@@ -47,6 +48,9 @@ management:
       show-details: when-authorized
 
 azure:
+  tenant-id: ${AZURE_TENANT_ID:}
+  client-id: ${AZURE_CLIENT_ID:}
+  jwk-set-uri: ${AZURE_JWK_SET_URI:}
   event-hubs:
     connection-string: ${event-hubs-connection-string:}
     hub-name: audit-logs

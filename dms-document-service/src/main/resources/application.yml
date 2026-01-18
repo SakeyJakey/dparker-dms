@@ -15,9 +15,10 @@ spring:
           account-key: ${storage-account-key-davidparker-lv-bmth}
   
   datasource:
-    url: ${database-connection-string:jdbc:postgresql://localhost:5432/dms_document}
-    username: ${database-username:postgres}
-    password: ${database-password:postgres}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/dms_document}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5

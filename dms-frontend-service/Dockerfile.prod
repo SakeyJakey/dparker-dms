@@ -1,0 +1,50 @@
+# Multi-stage build for Angular frontend (Production)
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package*.json ./
+
+# Install dependencies (use npm ci for production builds)
+RUN npm ci
+
+# Copy source files
+COPY . .
+
+# Build the application for production
+RUN npm run build
+
+# Production stage
+FROM nginx:alpine
+
+# Install gettext for envsubst (needed for environment variable substitution in nginx.conf if needed)
+RUN apk add --no-cache gettext
+
+# Copy built files (Angular outputs to browser subdirectory)
+COPY --from=build /app/dist/dms-frontend/browser /usr/share/nginx/html
+
+# Copy nginx configuration (complete file, replaces default nginx.conf)
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Remove default nginx config files to prevent conflicts (port 80, etc.)
+RUN rm -f /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/*.conf 2>/dev/null || true
+
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Add metadata
+LABEL maintainer="Liverpool Victoria - DMS Team"
+LABEL application="frontend-service"
+LABEL description="DMS Frontend Service"
+LABEL version="0.1.0-SNAPSHOT"
+
+# Expose port 8080 (standard for Kubernetes, avoids permission issues with port 80)
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
+
+CMD ["/entrypoint.sh"]

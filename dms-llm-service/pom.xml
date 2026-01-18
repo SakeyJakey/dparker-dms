@@ -6,23 +6,15 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
-        <relativePath/>
+        <groupId>com.davidparker.dms</groupId>
+        <artifactId>dms-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     
-    <groupId>com.davidparker.dms</groupId>
     <artifactId>dms-llm-service</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <name>DMS LLM Service</name>
     <description>LLM and AI integration service for DMS - Document embedding and natural language queries</description>
-    
-    <properties>
-        <java.version>25</java.version>
-        <spring-cloud-azure.version>5.20.0</spring-cloud-azure.version>
-        <azure-sdk.version>1.15.1</azure-sdk.version>
-    </properties>
     
     <dependencies>
         <!-- Spring Boot Starters -->

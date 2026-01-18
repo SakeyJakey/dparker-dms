@@ -1,0 +1,22 @@
+# Production Dockerfile - expects pre-built JAR from CI
+FROM busybox AS downloader
+RUN wget -O /opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+
+FROM mcr.microsoft.com/openjdk/jdk:25-distroless
+EXPOSE 8080
+ARG version
+
+ENV TZ=Europe/London
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV OTEL_TRACES_EXPORTER=otlp
+ENV OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy.observability.svc.cluster.local:4317
+ENV OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+ENV OTEL_JAVAAGENT_ENABLED=true
+ENV OTEL_INSTRUMENTATION_JDBC_ENABLED=true
+
+COPY --from=downloader /opentelemetry-javaagent.jar opentelemetry-javaagent.jar
+COPY *.yml .
+COPY *.xml .
+COPY dms-document-service-${version}.jar dms-document-service.jar
+
+CMD ["-javaagent:opentelemetry-javaagent.jar", "-Dotel.service.name=dms-document-service", "-Dspring.profiles.active=prod", "-jar", "dms-document-service.jar"]

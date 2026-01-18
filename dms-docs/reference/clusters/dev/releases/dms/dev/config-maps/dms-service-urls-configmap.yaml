@@ -4,9 +4,17 @@ metadata:
   name: dms-service-urls-configmap
   namespace: dms-dev
 data:
+  # Service URLs in Kubernetes DNS format
   apigateway.service: "http://dms-api-gateway-service.dms-dev.svc.cluster.local:8080"
   admin.service: "http://dms-admin-service.dms-dev.svc.cluster.local:8080"
   audit.service: "http://dms-audit-service.dms-dev.svc.cluster.local:8080"
   compliance.service: "http://dms-compliance-service.dms-dev.svc.cluster.local:8080"
   document.service: "http://dms-document-service.dms-dev.svc.cluster.local:8080"
   llm.service: "http://dms-llm-service.dms-dev.svc.cluster.local:8080"
+  # Environment variable format keys (for direct env var injection)
+  ADMIN_SERVICE_URL: "http://dms-admin-service.dms-dev.svc.cluster.local:8080"
+  AUDIT_SERVICE_URL: "http://dms-audit-service.dms-dev.svc.cluster.local:8080"
+  COMPLIANCE_SERVICE_URL: "http://dms-compliance-service.dms-dev.svc.cluster.local:8080"
+  DOCUMENT_SERVICE_URL: "http://dms-document-service.dms-dev.svc.cluster.local:8080"
+  LLM_SERVICE_URL: "http://dms-llm-service.dms-dev.svc.cluster.local:8080"
+  API_GATEWAY_URL: "http://dms-api-gateway-service.dms-dev.svc.cluster.local:8080"

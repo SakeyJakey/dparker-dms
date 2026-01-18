@@ -4,19 +4,7 @@ metadata:
   name: dms-azure-configmap
   namespace: dms-dev
 data:
-  # Authority (Azure AD tenant endpoint)
-  azure.auth.authority: "https://login.microsoftonline.com/${AZURE_TENANT_ID}/v2.0"
-  
-  # Home page (origin only, no path)
-  azure.auth.home-page: "https://dms.dev.lvad.lvfs.net"
-  
-  # Redirect endpoint (path only, no full URL)
-  app.redirectEndpoint: "/api/auth/azure/callback"
-  
-  # Auth provider
-  auth.provider: "azure"
-  
-  # Azure AD group → application role mapping
-  # Replace <group-object-id> with actual Azure AD group Object IDs
-  # azure.ad.role-mapping.<group-object-id>: "ROLE_ADMINISTRATOR"
-  # azure.ad.role-mapping.<group-display-name>: "ROLE_USER"
+  AZURE_TENANT_ID: "${AZURE_TENANT_ID}"
+  AZURE_CLIENT_ID: "${AZURE_CLIENT_ID}"
+  AZURE_JWK_SET_URI: "https://login.microsoftonline.com/${AZURE_TENANT_ID}/discovery/v2.0/keys"
+  AZURE_KEYVAULT_URI: "https://dms-keyvault-dev.vault.azure.net"

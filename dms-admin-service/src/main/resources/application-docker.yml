@@ -1,0 +1,18 @@
+# Docker Compose profile
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres-admin:5432/dms_admin}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+server:
+  port: 8081
+
+# Bypass authentication in docker mode for local testing
+security:
+  bypass-auth: true
+
+logging:
+  level:
+    com.davidparker.dms.admin: DEBUG

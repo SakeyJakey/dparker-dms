@@ -16,6 +16,8 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowedOrigins(Arrays.asList(
+            "http://localhost:8080",
+            "http://localhost:80",
             "https://dms.dev.lvad.lvfs.net",
             "https://dms.uat.lvad.lvfs.net",
             "https://dms.prod.lvad.lvfs.net"
