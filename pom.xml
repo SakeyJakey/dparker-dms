@@ -90,6 +90,13 @@
             <version>1.18.40</version>
             <optional>true</optional>
         </dependency>
+        
+        <!-- Testing - Mockito 5.20.0 for Java 25 support -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.20.0</version>
+        </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

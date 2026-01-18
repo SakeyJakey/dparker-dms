@@ -3,16 +3,16 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files first
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (use --legacy-peer-deps to handle peer dependency conflicts)
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY ./ /app
 
-# Build the application
+# Build the application (Angular CLI is installed via npm install)
 RUN npm run build
 
 # Stage 2: Serve with nginx
