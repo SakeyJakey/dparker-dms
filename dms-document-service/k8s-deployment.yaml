@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dms-document-service
+  labels:
+    app: dms-document-service
+    service: document
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dms-document-service
+  template:
+    metadata:
+      labels:
+        app: dms-document-service
+        service: document
+    spec:
+      containers:
+      - name: dms-document-service
+        image: dms-document-service:latest
+        ports:
+        - containerPort: 8083
+        env:
+        - name: PORT
+          value: "8083"
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: dms-config
+              key: environment
+        - name: database-connection-string
+          valueFrom:
+            secretKeyRef:
+              name: dms-secrets
+              key: document-db-connection-string
+        - name: storage-account-key-davidparker-lv-bmth
+          valueFrom:
+            secretKeyRef:
+              name: dms-secrets
+              key: storage-account-key-davidparker-lv-bmth
+        - name: ADMIN_SERVICE_URL
+          value: "http://dms-admin-service:8081"
+        - name: AUDIT_SERVICE_URL
+          value: "http://dms-audit-service:8082"
+        - name: LLM_SERVICE_URL
+          value: "http://dms-llm-service:8085"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8083
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8083
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1000m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dms-document-service
+  labels:
+    app: dms-document-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8083
+    targetPort: 8083
+    protocol: TCP
+    name: http
+  selector:
+    app: dms-document-service

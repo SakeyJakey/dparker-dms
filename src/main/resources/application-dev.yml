@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dms
+    username: postgres
+    password: postgres
+  
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+azure:
+  storage:
+    account-key: ${STORAGE_ACCOUNT_KEY:dev-key}
+  ai:
+    search:
+      endpoint: ${AZURE_AI_SEARCH_ENDPOINT:}
+      api-key: ${AZURE_AI_SEARCH_API_KEY:}
+    openai:
+      endpoint: ${AZURE_OPENAI_ENDPOINT:}
+      api-key: ${AZURE_OPENAI_API_KEY:}
+  event-hubs:
+    connection-string: ${EVENT_HUBS_CONNECTION_STRING:}
+
+logging:
+  level:
+    com.davidparker.dms: DEBUG

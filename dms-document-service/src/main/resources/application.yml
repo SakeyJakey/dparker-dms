@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: dms-document-service
+  
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-sources:
+            - name: dms-keyvault
+              endpoint: https://dms-keyvault-${ENVIRONMENT:dev}.vault.azure.net
+      storage:
+        blob:
+          account-name: dmsstorage${ENVIRONMENT:dev}
+          account-key: ${storage-account-key-davidparker-lv-bmth}
+  
+  datasource:
+    url: ${database-connection-string:jdbc:postgresql://localhost:5432/dms_document}
+    username: ${database-username:postgres}
+    password: ${database-password:postgres}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: ${PORT:8083}
+  error:
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Service URLs for inter-service communication
+dms:
+  services:
+    admin-service-url: ${ADMIN_SERVICE_URL:http://dms-admin-service:8081}
+    audit-service-url: ${AUDIT_SERVICE_URL:http://dms-audit-service:8082}
+    llm-service-url: ${LLM_SERVICE_URL:http://dms-llm-service:8085}
+
+logging:
+  level:
+    root: INFO
+    com.davidparker.dms.document: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

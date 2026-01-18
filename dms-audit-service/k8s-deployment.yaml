@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dms-audit-service
+  labels:
+    app: dms-audit-service
+    service: audit
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dms-audit-service
+  template:
+    metadata:
+      labels:
+        app: dms-audit-service
+        service: audit
+    spec:
+      containers:
+      - name: dms-audit-service
+        image: dms-audit-service:latest
+        ports:
+        - containerPort: 8082
+        env:
+        - name: PORT
+          value: "8082"
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: dms-config
+              key: environment
+        - name: database-connection-string
+          valueFrom:
+            secretKeyRef:
+              name: dms-secrets
+              key: audit-db-connection-string
+        - name: event-hubs-connection-string
+          valueFrom:
+            secretKeyRef:
+              name: dms-secrets
+              key: event-hubs-connection-string
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8082
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8082
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dms-audit-service
+  labels:
+    app: dms-audit-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8082
+    targetPort: 8082
+    protocol: TCP
+    name: http
+  selector:
+    app: dms-audit-service

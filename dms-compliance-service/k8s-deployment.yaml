@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dms-compliance-service
+  labels:
+    app: dms-compliance-service
+    service: compliance
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dms-compliance-service
+  template:
+    metadata:
+      labels:
+        app: dms-compliance-service
+        service: compliance
+    spec:
+      containers:
+      - name: dms-compliance-service
+        image: dms-compliance-service:latest
+        ports:
+        - containerPort: 8084
+        env:
+        - name: PORT
+          value: "8084"
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: dms-config
+              key: environment
+        - name: AUDIT_SERVICE_URL
+          value: "http://dms-audit-service:8082"
+        - name: DOCUMENT_SERVICE_URL
+          value: "http://dms-document-service:8083"
+        - name: ADMIN_SERVICE_URL
+          value: "http://dms-admin-service:8081"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8084
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dms-compliance-service
+  labels:
+    app: dms-compliance-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8084
+    targetPort: 8084
+    protocol: TCP
+    name: http
+  selector:
+    app: dms-compliance-service

@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: dms-api
+  
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-sources:
+            - name: dms-keyvault
+              endpoint: https://dms-keyvault-${ENVIRONMENT:dev}.vault.azure.net
+      storage:
+        blob:
+          account-name: dmsstorage${ENVIRONMENT:dev}
+          account-key: ${azure.storage.account-key}
+  
+  datasource:
+    url: ${database-connection-string}
+    username: ${database-username:}
+    password: ${database-password:}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+  
+  data:
+    redis:
+      host: ${redis-host:localhost}
+      port: ${redis-port:6379}
+      password: ${redis-password:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 2
+  
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+azure:
+  storage:
+    app-containers:
+      davidparker-lv-bmth:
+        account-key: ${storage-account-key-davidparker-lv-bmth}
+  ai:
+    search:
+      endpoint: ${azure-ai-search-endpoint:}
+      api-key: ${azure-ai-search-api-key}
+    openai:
+      endpoint: ${azure-openai-endpoint:}
+      api-key: ${azure-openai-api-key}
+  event-hubs:
+    connection-string: ${event-hubs-connection-string:}
+
+logging:
+  level:
+    root: INFO
+    com.davidparker.dms: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
