@@ -51,7 +51,7 @@ class RoleManagementServiceTest {
 
         testRole = Role.builder()
             .id(roleId)
-            .name("TEST_ROLE")
+            .applicationName("TEST_ROLE")
             .description("Test Role")
             .permissions(new HashSet<>())
             .createdAt(Instant.now())
@@ -59,7 +59,7 @@ class RoleManagementServiceTest {
 
         testPermission = Permission.builder()
             .id(permissionId)
-            .name("TEST_PERMISSION")
+            .applicationName("TEST_PERMISSION")
             .description("Test Permission")
             .resourceType("Document")
             .createdAt(Instant.now())
@@ -104,7 +104,7 @@ class RoleManagementServiceTest {
     @Test
     void testCreateRole() {
         RoleCreateRequest request = new RoleCreateRequest();
-        request.setName("NEW_ROLE");
+        request.setApplicationName("NEW_ROLE");
         request.setDescription("New Role Description");
 
         when(roleRepository.save(any(Role.class))).thenReturn(testRole);

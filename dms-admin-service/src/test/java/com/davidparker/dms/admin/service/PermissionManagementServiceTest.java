@@ -44,7 +44,7 @@ class PermissionManagementServiceTest {
 
         testPermission = Permission.builder()
             .id(permissionId)
-            .name("TEST_PERMISSION")
+            .applicationName("TEST_PERMISSION")
             .description("Test Permission")
             .resourceType("Document")
             .createdAt(Instant.now())
@@ -89,7 +89,7 @@ class PermissionManagementServiceTest {
     @Test
     void testCreatePermission() {
         PermissionCreateRequest request = new PermissionCreateRequest();
-        request.setName("NEW_PERMISSION");
+        request.setApplicationName("NEW_PERMISSION");
         request.setDescription("New Permission Description");
         request.setResourceType("Document");
 

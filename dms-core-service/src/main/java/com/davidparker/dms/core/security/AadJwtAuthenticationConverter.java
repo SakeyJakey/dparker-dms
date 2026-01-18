@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
  * Shared JWT authentication converter for Azure AD / Entra ID tokens.
  * Extracts roles from JWT claims and converts them to Spring Security authorities.
  */
-public class AadJwtAuthenticationConverter implements Converter<Jwt, org.springframework.security.core.Authentication> {
+public class AadJwtAuthenticationConverter implements Converter<Jwt, org.springframework.security.authentication.AbstractAuthenticationToken> {
 
     @Override
-    public org.springframework.security.core.Authentication convert(Jwt jwt) {
+    public org.springframework.security.authentication.AbstractAuthenticationToken convert(Jwt jwt) {
         Collection<GrantedAuthority> authorities = extractAuthorities(jwt);
         return new JwtAuthenticationToken(jwt, authorities);
     }

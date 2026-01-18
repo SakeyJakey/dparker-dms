@@ -1,6 +1,7 @@
 package com.davidparker.dms.document.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class ApplicationServiceClient {
         return webClient.get()
             .uri("/api/v1/admin/applications/{id}", applicationId)
             .retrieve()
-            .bodyToMono(Map.class)
+            .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
             .onErrorResume(e -> {
                 System.err.println("Failed to get application: " + e.getMessage());
                 return Mono.empty();
@@ -40,7 +41,7 @@ public class ApplicationServiceClient {
                 .queryParam("entraAppId", entraAppId)
                 .build())
             .retrieve()
-            .bodyToMono(Map.class)
+            .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
             .onErrorResume(e -> {
                 System.err.println("Failed to get application by Entra ID: " + e.getMessage());
                 return Mono.empty();

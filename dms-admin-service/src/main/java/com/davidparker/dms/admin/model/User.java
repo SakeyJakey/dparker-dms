@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -34,6 +36,8 @@ public class User {
 
     @Column(nullable = false)
     @Builder.Default
+    @Getter
+    @Setter
     private Boolean enabled = true;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -43,6 +47,8 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     @Builder.Default
+    @Getter
+    @Setter
     private Set<Role> roles = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)

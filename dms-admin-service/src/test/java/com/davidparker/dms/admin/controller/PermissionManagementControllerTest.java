@@ -81,7 +81,7 @@ class PermissionManagementControllerTest {
         mockMvc.perform(get("/api/v1/admin/permissions/{id}", permissionId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(permissionId.toString()))
-            .andExpect(jsonPath("$.name").value("document.read"));
+            .andExpect(jsonPath("$.applicationName").value("document.read"));
 
         verify(permissionManagementService).getPermission(permissionId);
     }
@@ -109,7 +109,7 @@ class PermissionManagementControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("document.write"));
+            .andExpect(jsonPath("$.applicationName").value("document.write"));
 
         verify(permissionManagementService).createPermission(any(PermissionCreateRequest.class));
     }

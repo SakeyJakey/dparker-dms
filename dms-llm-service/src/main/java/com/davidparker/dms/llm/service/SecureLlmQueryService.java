@@ -1,13 +1,15 @@
 package com.davidparker.dms.llm.service;
 
 import com.azure.ai.openai.OpenAIClient;
+import com.azure.core.util.Context;
 import com.azure.search.documents.SearchClient;
+import com.azure.search.documents.SearchDocument;
 import com.azure.search.documents.models.SearchOptions;
-import com.azure.search.documents.models.SearchResults;
-import com.azure.search.documents.models.VectorizedQuery;
-import com.azure.search.documents.models.VectorSearchOptions;
+import com.azure.search.documents.models.SearchResult;
+import com.azure.search.documents.util.SearchPagedIterable;
 import com.davidparker.dms.llm.dto.LlmQueryRequest;
 import com.davidparker.dms.llm.dto.LlmQueryResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class SecureLlmQueryService {
     private final OpenAIClient aiFoundryClient;
     private final SearchClient searchClient;
     private final AuditEventClient auditEventClient;
+    private final ObjectMapper objectMapper;
 
     public SecureLlmQueryService(
             OpenAIClient aiFoundryClient,
@@ -32,6 +35,31 @@ public class SecureLlmQueryService {
         this.aiFoundryClient = aiFoundryClient;
         this.searchClient = searchClient;
         this.auditEventClient = auditEventClient;
+        this.objectMapper = new ObjectMapper();
+    }
+    
+    @SuppressWarnings("unchecked")
+    private String getQueryFromRequest(LlmQueryRequest request) {
+        try {
+            Map<String, Object> requestMap = objectMapper.convertValue(request, Map.class);
+            return requestMap.get("query") != null ? requestMap.get("query").toString() : "";
+        } catch (Exception e) {
+            return "";
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private LlmQueryRequest.Filters getFiltersFromRequest(LlmQueryRequest request) {
+        try {
+            Map<String, Object> requestMap = objectMapper.convertValue(request, Map.class);
+            Object filtersObj = requestMap.get("filters");
+            if (filtersObj != null) {
+                return objectMapper.convertValue(filtersObj, LlmQueryRequest.Filters.class);
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @PreAuthorize("hasRole('DMS.LLM.Service')")
@@ -45,7 +73,8 @@ public class SecureLlmQueryService {
         auditEvent.put("action", "LLM_QUERY_INITIATED");
         auditEvent.put("result", "SUCCESS");
         auditEvent.put("correlationId", correlationId.toString());
-        auditEvent.put("details", Map.of("query", sanitizeQuery(request.getQuery())));
+        String queryText = getQueryFromRequest(request);
+        auditEvent.put("details", Map.of("query", sanitizeQuery(queryText)));
         auditEvent.put("timestamp", Instant.now().toString());
         auditEventClient.logEvent(auditEvent);
         
@@ -54,14 +83,14 @@ public class SecureLlmQueryService {
             SearchOptions searchOptions = buildSecureSearchOptions(request);
             
             // Execute search
-            SearchResults<Map> results = searchClient != null ? 
-                searchClient.search(request.getQuery(), searchOptions, Map.class) : null;
+            SearchPagedIterable searchResults = searchClient != null ? 
+                searchClient.search(queryText, searchOptions, Context.NONE) : null;
             
             // Filter results by RBAC permissions
-            List<Map<String, Object>> permittedResults = filterByPermissions(results);
+            List<Map<String, Object>> permittedResults = filterByPermissions(searchResults);
             
             // Generate summary
-            String summary = generateSummaryWithCitations(request.getQuery(), permittedResults);
+            String summary = generateSummaryWithCitations(queryText, permittedResults);
             
             // Log query completion
             Map<String, Object> completionEvent = new HashMap<>();
@@ -96,9 +125,22 @@ public class SecureLlmQueryService {
     private SearchOptions buildSecureSearchOptions(LlmQueryRequest request) {
         String securityFilter = "applicationId eq 'davidparker-lv-bmth'";
         
-        if (request.getFilters() != null && request.getFilters().getClassifications() != null) {
-            String classifications = String.join("','", request.getFilters().getClassifications());
-            securityFilter += String.format(" and classification in ('%s')", classifications);
+        LlmQueryRequest.Filters filters = getFiltersFromRequest(request);
+        if (filters != null) {
+            try {
+                Map<String, Object> filtersMap = objectMapper.convertValue(filters, Map.class);
+                Object classificationsObj = filtersMap.get("classifications");
+                if (classificationsObj != null && classificationsObj instanceof List) {
+                    @SuppressWarnings("unchecked")
+                    List<String> classifications = (List<String>) classificationsObj;
+                    if (!classifications.isEmpty()) {
+                        String classificationsStr = String.join("','", classifications);
+                        securityFilter += String.format(" and classification in ('%s')", classificationsStr);
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore filter parsing errors
+            }
         }
         
         SearchOptions options = new SearchOptions()
@@ -114,11 +156,16 @@ public class SecureLlmQueryService {
         return query.substring(0, Math.min(query.length(), 200));
     }
 
-    private List<Map<String, Object>> filterByPermissions(SearchResults<Map> results) {
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> filterByPermissions(SearchPagedIterable searchResults) {
         List<Map<String, Object>> permittedResults = new ArrayList<>();
-        if (results != null) {
-            results.getResults().forEach(result -> {
-                permittedResults.add(result.getDocument());
+        if (searchResults != null) {
+            searchResults.forEach(resultObj -> {
+                SearchResult result = (SearchResult) resultObj;
+                SearchDocument doc = result.getDocument(SearchDocument.class);
+                Map<String, Object> docMap = new HashMap<>();
+                doc.forEach((key, value) -> docMap.put(key, value));
+                permittedResults.add(docMap);
             });
         }
         return permittedResults;

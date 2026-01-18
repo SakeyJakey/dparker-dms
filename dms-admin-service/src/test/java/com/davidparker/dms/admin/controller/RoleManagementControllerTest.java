@@ -82,7 +82,7 @@ class RoleManagementControllerTest {
         mockMvc.perform(get("/api/v1/admin/roles/{id}", roleId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(roleId.toString()))
-            .andExpect(jsonPath("$.name").value("Test Role"));
+            .andExpect(jsonPath("$.applicationName").value("Test Role"));
 
         verify(roleManagementService).getRole(roleId);
     }
@@ -109,7 +109,7 @@ class RoleManagementControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("New Role"));
+            .andExpect(jsonPath("$.applicationName").value("New Role"));
 
         verify(roleManagementService).createRole(any(RoleCreateRequest.class));
     }

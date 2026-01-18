@@ -1,6 +1,7 @@
 package com.davidparker.dms.core.client;
 
 import com.davidparker.dms.core.dto.AuditEventDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,9 +20,11 @@ public class AuditEventClient {
 
     private final WebClient webClient;
     private final String auditServiceUrl;
+    private final ObjectMapper objectMapper;
 
     public AuditEventClient(@Value("${dms.services.audit-service-url:http://dms-audit-service:8082}") String auditServiceUrl) {
         this.auditServiceUrl = auditServiceUrl;
+        this.objectMapper = new ObjectMapper();
         this.webClient = WebClient.builder()
             .baseUrl(auditServiceUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -53,14 +56,18 @@ public class AuditEventClient {
      * @param auditEvent Audit event DTO
      */
     public void logEvent(AuditEventDto auditEvent) {
-        // Convert DTO to map for the audit service
-        Map<String, Object> eventData = Map.of(
-            "eventType", auditEvent.getEventType(),
-            "eventCategory", auditEvent.getEventCategory(),
-            "action", auditEvent.getAction(),
-            "result", auditEvent.getResult(),
-            "timestamp", auditEvent.getTimestamp() != null ? auditEvent.getTimestamp().toString() : java.time.Instant.now().toString()
-        );
-        logEvent(eventData);
+        try {
+            // Convert DTO to map using Jackson
+            @SuppressWarnings("unchecked")
+            Map<String, Object> eventDataMap = objectMapper.convertValue(auditEvent, Map.class);
+            // Ensure timestamp is set if null
+            if (!eventDataMap.containsKey("timestamp") || eventDataMap.get("timestamp") == null) {
+                eventDataMap.put("timestamp", java.time.Instant.now().toString());
+            }
+            logEvent(eventDataMap);
+        } catch (Exception e) {
+            // Log error but don't fail the operation
+            System.err.println("Failed to convert audit event DTO to map: " + e.getMessage());
+        }
     }
 }

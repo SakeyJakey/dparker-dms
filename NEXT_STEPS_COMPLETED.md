@@ -27,29 +27,29 @@ This document summarizes the completion of all next steps from the LV Patterns I
 **Created Files**:
 
 #### UAT Environment:
-- `clusters/uat/namespaces/dms-uat.yaml`
-- `clusters/uat/namespaces/dms-uat-frontend.yaml`
-- `clusters/uat/manifests/istio-configs/uat/peer-authentication.yaml`
-- `clusters/uat/releases/dms/uat/config-maps/dms-service-urls-configmap.yaml`
-- `clusters/uat/releases/dms/uat/config-maps/dms-frontend-configmap.yaml`
-- `clusters/uat/releases/dms/uat/istio-configs/virtual-services/dms-api-gateway-service.yaml`
-- `clusters/uat/releases/dms/uat/istio-configs/virtual-services/dms-frontend-service.yaml`
-- `clusters/uat/releases/dms/uat/istio-configs/destination-rules/dms-services.yaml`
+- `dms-docs/reference/clusters/uat/namespaces/dms-uat.yaml`
+- `dms-docs/reference/clusters/uat/namespaces/dms-uat-frontend.yaml`
+- `dms-docs/reference/clusters/uat/manifests/istio-configs/uat/peer-authentication.yaml`
+- `dms-docs/reference/clusters/uat/releases/dms/uat/config-maps/dms-service-urls-configmap.yaml`
+- `dms-docs/reference/clusters/uat/releases/dms/uat/config-maps/dms-frontend-configmap.yaml`
+- `dms-docs/reference/clusters/uat/releases/dms/uat/istio-configs/virtual-services/dms-api-gateway-service.yaml`
+- `dms-docs/reference/clusters/uat/releases/dms/uat/istio-configs/virtual-services/dms-frontend-service.yaml`
+- `dms-docs/reference/clusters/uat/releases/dms/uat/istio-configs/destination-rules/dms-services.yaml`
 
 #### Prod Environment:
-- `clusters/prod/namespaces/dms-prod.yaml`
-- `clusters/prod/namespaces/dms-prod-frontend.yaml`
-- `clusters/prod/manifests/istio-configs/prod/peer-authentication.yaml`
-- `clusters/prod/releases/dms/prod/config-maps/dms-service-urls-configmap.yaml`
-- `clusters/prod/releases/dms/prod/config-maps/dms-frontend-configmap.yaml`
-- `clusters/prod/releases/dms/prod/istio-configs/virtual-services/dms-api-gateway-service.yaml`
-- `clusters/prod/releases/dms/prod/istio-configs/virtual-services/dms-frontend-service.yaml`
-- `clusters/prod/releases/dms/prod/istio-configs/destination-rules/dms-services.yaml`
+- `dms-docs/reference/clusters/prod/namespaces/dms-prod.yaml`
+- `dms-docs/reference/clusters/prod/namespaces/dms-prod-frontend.yaml`
+- `dms-docs/reference/clusters/prod/manifests/istio-configs/prod/peer-authentication.yaml`
+- `dms-docs/reference/clusters/prod/releases/dms/prod/config-maps/dms-service-urls-configmap.yaml`
+- `dms-docs/reference/clusters/prod/releases/dms/prod/config-maps/dms-frontend-configmap.yaml`
+- `dms-docs/reference/clusters/prod/releases/dms/prod/istio-configs/virtual-services/dms-api-gateway-service.yaml`
+- `dms-docs/reference/clusters/prod/releases/dms/prod/istio-configs/virtual-services/dms-frontend-service.yaml`
+- `dms-docs/reference/clusters/prod/releases/dms/prod/istio-configs/destination-rules/dms-services.yaml`
 
-**Flux Configurations**:
-- `flux-config/kustomization-dev.yaml` - Dev environment
-- `flux-config/kustomization-uat.yaml` - UAT environment
-- `flux-config/kustomization-prod.yaml` - Prod environment
+**Flux Configurations** (Reference materials for separate Flux repositories):
+- `dms-docs/reference/flux-config/kustomization-dev.yaml` - Dev environment
+- `dms-docs/reference/flux-config/kustomization-uat.yaml` - UAT environment
+- `dms-docs/reference/flux-config/kustomization-prod.yaml` - Prod environment
 
 ### 3. Implement API Gateway Service
 
@@ -80,7 +80,7 @@ This document summarizes the completion of all next steps from the LV Patterns I
 **Status**: ✅ Completed
 
 **Created Files**:
-- `clusters/dev/releases/dms/dev/config-maps/dms-azure-configmap.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/config-maps/dms-azure-configmap.yaml`
 
 **Configuration**:
 - Azure AD authority endpoint
@@ -96,13 +96,13 @@ This document summarizes the completion of all next steps from the LV Patterns I
 **Status**: ✅ Completed
 
 **Created ServiceAccounts**:
-- `clusters/dev/releases/dms/dev/service-accounts/dms-admin-service.yaml`
-- `clusters/dev/releases/dms/dev/service-accounts/dms-audit-service.yaml`
-- `clusters/dev/releases/dms/dev/service-accounts/dms-document-service.yaml`
-- `clusters/dev/releases/dms/dev/service-accounts/dms-compliance-service.yaml`
-- `clusters/dev/releases/dms/dev/service-accounts/dms-llm-service.yaml`
-- `clusters/dev/releases/dms/dev/service-accounts/dms-frontend-service.yaml`
-- `clusters/dev/releases/dms/dev/service-accounts/dms-api-gateway-service.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/service-accounts/dms-admin-service.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/service-accounts/dms-audit-service.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/service-accounts/dms-document-service.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/service-accounts/dms-compliance-service.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/service-accounts/dms-llm-service.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/service-accounts/dms-frontend-service.yaml`
+- `dms-docs/reference/clusters/dev/releases/dms/dev/service-accounts/dms-api-gateway-service.yaml`
 
 **Usage**: All deployments reference these service accounts via `serviceAccountName` field.
 
@@ -126,19 +126,27 @@ All next steps have been completed:
 
 ## File Structure
 
+**Note**: `clusters/` and `flux-config/` have been moved to `dms-docs/reference/` as reference materials for separate Flux repositories.
+
 ```
-clusters/
-├── dev/
-│   ├── manifests/istio-configs/dev/
-│   ├── namespaces/
-│   └── releases/dms/dev/
-│       ├── config-maps/
-│       ├── istio-configs/
-│       └── service-accounts/
-├── uat/
-│   └── [same structure as dev]
-└── prod/
-    └── [same structure as dev]
+dms-docs/reference/
+├── clusters/
+│   ├── dev/
+│   │   ├── manifests/istio-configs/dev/
+│   │   ├── namespaces/
+│   │   └── releases/dms/dev/
+│   │       ├── config-maps/
+│   │       ├── istio-configs/
+│   │       └── service-accounts/
+│   ├── uat/
+│   │   └── [same structure as dev]
+│   └── prod/
+│       └── [same structure as dev]
+└── flux-config/
+    ├── gitrepository.yaml
+    ├── kustomization-dev.yaml
+    ├── kustomization-uat.yaml
+    └── kustomization-prod.yaml
 
 dms-api-gateway-service/
 ├── pom.xml
@@ -147,12 +155,9 @@ dms-api-gateway-service/
 └── src/main/
     ├── java/com/davidparker/dms/gateway/
     └── resources/application.yml
-
-flux-config/
-├── kustomization-dev.yaml
-├── kustomization-uat.yaml
-└── kustomization-prod.yaml
 ```
+
+**Transfer**: See `dms-docs/reference/TRANSFER_TO_FLUX_REPOS.md` for guide on moving these to separate Flux repositories.
 
 ## Version History
 

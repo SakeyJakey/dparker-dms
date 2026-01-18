@@ -1,8 +1,8 @@
 package com.davidparker.dms.audit.service;
 
 import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.EventHubClientBuilder;
 import com.azure.messaging.eventhubs.EventHubProducerClient;
-import com.azure.messaging.eventhubs.EventHubProducerClientBuilder;
 import com.davidparker.dms.audit.model.AuditEvent;
 import com.davidparker.dms.audit.repository.AuditLogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,9 +34,9 @@ public class AuditService {
         this.objectMapper = objectMapper;
         
         if (eventHubsConnectionString != null && !eventHubsConnectionString.isEmpty()) {
-            this.eventHubProducerClient = new EventHubProducerClientBuilder()
+            this.eventHubProducerClient = new EventHubClientBuilder()
                 .connectionString(eventHubsConnectionString, hubName)
-                .buildClient();
+                .buildProducerClient();
         } else {
             this.eventHubProducerClient = null;
         }
@@ -127,7 +127,15 @@ public class AuditService {
         try {
             String eventJson = objectMapper.writeValueAsString(event);
             EventData eventData = new EventData(eventJson.getBytes(StandardCharsets.UTF_8));
-            eventHubProducerClient.createBatch().addEvent(eventData);
+            
+            // Create a batch and add the event
+            com.azure.messaging.eventhubs.EventDataBatch batch = eventHubProducerClient.createBatch();
+            if (batch.tryAdd(eventData)) {
+                eventHubProducerClient.send(batch);
+            } else {
+                // Event is too large for batch, send directly
+                eventHubProducerClient.send(java.util.Collections.singletonList(eventData));
+            }
         } catch (Exception e) {
             System.err.println("Failed to publish audit event to Event Hub: " + e.getMessage());
         }

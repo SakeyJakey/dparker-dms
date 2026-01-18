@@ -44,7 +44,7 @@ class ApplicationManagementControllerTest {
     void testListApplications() throws Exception {
         RegisteredApplication app = RegisteredApplication.builder()
             .id(applicationId)
-            .name("Test App")
+            .applicationName("Test App")
             .entraAppId("entra-123")
             .status(RegisteredApplication.ApplicationStatus.ACTIVE)
             .createdAt(Instant.now())
@@ -70,7 +70,7 @@ class ApplicationManagementControllerTest {
     void testGetApplication() throws Exception {
         RegisteredApplication app = RegisteredApplication.builder()
             .id(applicationId)
-            .name("Test App")
+            .applicationName("Test App")
             .entraAppId("entra-123")
             .status(RegisteredApplication.ApplicationStatus.ACTIVE)
             .createdAt(Instant.now())
@@ -82,7 +82,7 @@ class ApplicationManagementControllerTest {
         mockMvc.perform(get("/api/v1/admin/applications/{id}", applicationId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(applicationId.toString()))
-            .andExpect(jsonPath("$.name").value("Test App"));
+            .andExpect(jsonPath("$.applicationName").value("Test App"));
 
         verify(applicationManagementService).getApplication(applicationId);
     }
@@ -91,12 +91,12 @@ class ApplicationManagementControllerTest {
     @WithMockUser(roles = "DMS.Admin")
     void testProvisionApplication() throws Exception {
         ApplicationProvisionRequest request = new ApplicationProvisionRequest();
-        request.setName("New App");
+        request.setApplicationName("New App");
         request.setEntraAppId("entra-456");
 
         RegisteredApplication app = RegisteredApplication.builder()
             .id(applicationId)
-            .name("New App")
+            .applicationName("New App")
             .entraAppId("entra-456")
             .status(RegisteredApplication.ApplicationStatus.ACTIVE)
             .createdAt(Instant.now())
@@ -111,7 +111,7 @@ class ApplicationManagementControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("New App"));
+            .andExpect(jsonPath("$.applicationName").value("New App"));
 
         verify(applicationManagementService).provisionApplication(any(ApplicationProvisionRequest.class));
     }
@@ -121,7 +121,7 @@ class ApplicationManagementControllerTest {
     void testUpdateApplicationStatus() throws Exception {
         RegisteredApplication app = RegisteredApplication.builder()
             .id(applicationId)
-            .name("Test App")
+            .applicationName("Test App")
             .status(RegisteredApplication.ApplicationStatus.SUSPENDED)
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
