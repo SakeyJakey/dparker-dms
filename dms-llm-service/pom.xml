@@ -20,7 +20,7 @@
     
     <properties>
         <java.version>25</java.version>
-        <azure-sdk.version>${azure-sdk.version}</azure-sdk.version>
+        <azure-sdk.version>1.15.1</azure-sdk.version>
     </properties>
     
     <dependencies>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-identity</artifactId>
-            <version>${azure-sdk.version}</version>
+            <version>1.15.1</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>

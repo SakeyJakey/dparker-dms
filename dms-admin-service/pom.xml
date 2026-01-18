@@ -21,7 +21,7 @@
     <properties>
         <java.version>25</java.version>
         <spring-cloud-azure.version>5.20.0</spring-cloud-azure.version>
-        <azure-sdk.version>${azure-sdk.version}</azure-sdk.version>
+        <azure-sdk.version>1.15.1</azure-sdk.version>
     </properties>
     
     <dependencies>
@@ -65,12 +65,12 @@
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-identity</artifactId>
-            <version>${azure-sdk.version}</version>
+            <version>1.15.1</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-security-keyvault-keys</artifactId>
-            <version>${azure-sdk.version}</version>
+            <version>4.8.0</version>
         </dependency>
         
         <!-- OAuth2 / JWT -->
