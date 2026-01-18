@@ -159,3 +159,75 @@
 - Application role: `DMS.davidparker-lv-bmth`
 - Key Vault secrets prefixed with `davidparker-lv-bmth-` where applicable
 
+## Repository Structure Standards
+
+### Multi-Repository Architecture
+The DMS project is structured for standalone repositories. Each service and component will have its own GitHub repository:
+- `dms-admin-service` - Administration service repository
+- `dms-audit-service` - Audit logging service repository
+- `dms-compliance-service` - Compliance service repository
+- `dms-document-service` - Document management service repository
+- `dms-llm-service` - LLM/AI service repository
+- `dms-frontend-service` - Angular frontend repository
+- `dms-core-service` - Shared library repository
+- `dms-e2e-tests` - End-to-end test suite repository
+- `dms-docs` - Documentation and reference configurations repository
+
+### Folder Naming Conventions
+- **Documentation**: `dms-docs/` (NOT `docs/`)
+- **E2E Tests**: `dms-e2e-tests/` (NOT `e2e-tests/`)
+- **Reference Configs**: `dms-docs/reference/` (clusters, flux-config, istio-config)
+- **Dev Scripts**: `dms-docs/scripts/` (all development utilities)
+
+### Docker Compose
+- **docker-compose.yml** MUST be in the root directory
+- MUST build and start all services for local development
+- MUST include all required dependencies (PostgreSQL, Redis, etc.)
+- MUST use service names matching repository names
+- MUST configure proper health checks and dependencies
+
+### Development Scripts and Utilities
+- **ALL development scripts** (`.sh`, `.py`, etc.) MUST be stored in `dms-docs/scripts/`
+- Service-specific scripts can remain in their service folders
+- Shared utilities and helper scripts go in `dms-docs/scripts/`
+- Scripts should be documented in `dms-docs/README.md`
+
+## Documentation Standards
+
+### Documentation Location
+- **ALL documentation files** (except README.md files) MUST be created in the `dms-docs/` folder
+- README.md files can remain in their respective folders (root, service folders, etc.)
+- No documentation files (.md) should be created outside the `dms-docs/` folder except README.md files
+- Reference configurations (clusters, flux-config, istio-config) MUST be in `dms-docs/reference/`
+
+### Documentation Creation and Updates
+- **BEFORE creating any new documentation file**, you MUST:
+  1. First check if a document with the same or similar name already exists in the `dms-docs/` folder
+  2. If a document exists, you MUST update the existing document instead of creating a new one
+  3. When updating an existing document, you MUST add or update the metadata section at the top with:
+     - GitHub username: `davidparker-lv-bmth`
+     - Date and time stamp of the update in ISO 8601 format (e.g., `2024-01-18T13:32:00Z`)
+  4. If no similar document exists, create the new document in the `dms-docs/` folder
+
+### Documentation Metadata Format
+When updating existing documentation, add or update the metadata section at the top of the file:
+
+```markdown
+---
+Last Updated: 2024-01-18T13:32:00Z
+Updated By: davidparker-lv-bmth
+---
+```
+
+### Documentation File Naming
+- Use descriptive, kebab-case names (e.g., `user-guide.md`, `architecture-overview.md`)
+- Avoid generic names that might conflict with existing documents
+- Check `dms-docs/` folder before creating to ensure no duplicates
+
+### Reference Configurations
+- Kubernetes cluster configs: `dms-docs/reference/clusters/`
+- Flux GitOps configs: `dms-docs/reference/flux-config/`
+- Istio service mesh configs: `dms-docs/reference/istio-config/`
+- These are reference documents and should not be modified directly in the docs repo
+- Service-specific deployments should copy and adapt these configs
+

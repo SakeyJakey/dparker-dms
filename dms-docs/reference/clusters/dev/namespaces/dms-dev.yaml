@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dms-dev
+  labels:
+    istio-injection: enabled
+    environment: dev
+    app: dms

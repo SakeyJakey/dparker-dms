@@ -2,9 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dms-frontend-service
+  namespace: dms-dev-frontend
   labels:
     app: dms-frontend-service
     service: frontend
+    version: v1
 spec:
   replicas: 2
   selector:
@@ -15,24 +17,38 @@ spec:
       labels:
         app: dms-frontend-service
         service: frontend
+        version: v1
     spec:
       containers:
       - name: dms-frontend-service
         image: dms-frontend-service:latest
+        imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: APIGATEWAY_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: dms-service-urls-configmap
+              key: apigateway.service
         livenessProbe:
           httpGet:
-            path: /
-            port: 80
+            path: /health
+            port: 8080
           initialDelaySeconds: 10
           periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /
-            port: 80
+            path: /health
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
         resources:
           requests:
             memory: "128Mi"
@@ -45,14 +61,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dms-frontend-service
+  namespace: dms-dev-frontend
   labels:
     app: dms-frontend-service
+    service: frontend
 spec:
   type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 8080
+    targetPort: 8080
     protocol: TCP
-    name: http
   selector:
     app: dms-frontend-service

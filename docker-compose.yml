@@ -1,0 +1,261 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Databases
+  postgres-admin:
+    image: postgres:16
+    container_name: dms-postgres-admin
+    environment:
+      POSTGRES_DB: dms_admin
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-admin-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dms-network
+
+  postgres-document:
+    image: postgres:16
+    container_name: dms-postgres-document
+    environment:
+      POSTGRES_DB: dms_document
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-document-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dms-network
+
+  postgres-audit:
+    image: postgres:16
+    container_name: dms-postgres-audit
+    environment:
+      POSTGRES_DB: dms_audit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-audit-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dms-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: dms-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dms-network
+
+  # DMS Admin Service
+  dms-admin-service:
+    build:
+      context: ./dms-admin-service
+      dockerfile: Dockerfile
+    container_name: dms-admin-service
+    environment:
+      PORT: 8081
+      ENVIRONMENT: dev
+      SPRING_PROFILES_ACTIVE: dev
+      database-connection-string: jdbc:postgresql://postgres-admin:5432/dms_admin
+      database-username: postgres
+      database-password: postgres
+      redis-host: redis
+      redis-port: 6379
+      redis-password: ""
+      AUDIT_SERVICE_URL: http://dms-audit-service:8082
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres-admin:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # DMS Audit Service
+  dms-audit-service:
+    build:
+      context: ./dms-audit-service
+      dockerfile: Dockerfile
+    container_name: dms-audit-service
+    environment:
+      PORT: 8082
+      ENVIRONMENT: dev
+      SPRING_PROFILES_ACTIVE: dev
+      database-connection-string: jdbc:postgresql://postgres-audit:5432/dms_audit
+      database-username: postgres
+      database-password: postgres
+      event-hubs-connection-string: ""
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres-audit:
+        condition: service_healthy
+    networks:
+      - dms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # DMS Document Service
+  dms-document-service:
+    build:
+      context: ./dms-document-service
+      dockerfile: Dockerfile
+    container_name: dms-document-service
+    environment:
+      PORT: 8083
+      ENVIRONMENT: dev
+      SPRING_PROFILES_ACTIVE: dev
+      database-connection-string: jdbc:postgresql://postgres-document:5432/dms_document
+      database-username: postgres
+      database-password: postgres
+      ADMIN_SERVICE_URL: http://dms-admin-service:8081
+      AUDIT_SERVICE_URL: http://dms-audit-service:8082
+      LLM_SERVICE_URL: http://dms-llm-service:8085
+      storage-account-key-davidparker-lv-bmth: ""
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres-document:
+        condition: service_healthy
+      dms-admin-service:
+        condition: service_healthy
+    networks:
+      - dms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # DMS Compliance Service
+  dms-compliance-service:
+    build:
+      context: ./dms-compliance-service
+      dockerfile: Dockerfile
+    container_name: dms-compliance-service
+    environment:
+      PORT: 8084
+      ENVIRONMENT: dev
+      SPRING_PROFILES_ACTIVE: dev
+      ADMIN_SERVICE_URL: http://dms-admin-service:8081
+      DOCUMENT_SERVICE_URL: http://dms-document-service:8083
+      AUDIT_SERVICE_URL: http://dms-audit-service:8082
+    ports:
+      - "8084:8084"
+    depends_on:
+      dms-admin-service:
+        condition: service_healthy
+      dms-document-service:
+        condition: service_healthy
+    networks:
+      - dms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # DMS LLM Service
+  dms-llm-service:
+    build:
+      context: ./dms-llm-service
+      dockerfile: Dockerfile
+    container_name: dms-llm-service
+    environment:
+      PORT: 8085
+      ENVIRONMENT: dev
+      SPRING_PROFILES_ACTIVE: dev
+      DOCUMENT_SERVICE_URL: http://dms-document-service:8083
+      AUDIT_SERVICE_URL: http://dms-audit-service:8082
+      AZURE_AI_SEARCH_ENDPOINT: ""
+      AZURE_AI_SEARCH_KEY: ""
+      AZURE_AI_FOUNDRY_ENDPOINT: ""
+      AZURE_AI_FOUNDRY_KEY: ""
+    ports:
+      - "8085:8085"
+    depends_on:
+      dms-document-service:
+        condition: service_healthy
+    networks:
+      - dms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # DMS Frontend Service
+  dms-frontend-service:
+    build:
+      context: ./dms-frontend-service
+      dockerfile: Dockerfile
+    container_name: dms-frontend-service
+    ports:
+      - "80:80"
+    depends_on:
+      - dms-admin-service
+      - dms-document-service
+      - dms-compliance-service
+      - dms-llm-service
+    networks:
+      - dms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  postgres-admin-data:
+  postgres-document-data:
+  postgres-audit-data:
+  redis-data:
+
+networks:
+  dms-network:
+    driver: bridge

@@ -37,7 +37,7 @@ spring:
     baseline-on-migrate: true
 
 server:
-  port: ${PORT:8083}
+  port: ${PORT:8080}
   error:
     include-message: always
 
@@ -53,9 +53,9 @@ management:
 # Service URLs for inter-service communication
 dms:
   services:
-    admin-service-url: ${ADMIN_SERVICE_URL:http://dms-admin-service:8081}
-    audit-service-url: ${AUDIT_SERVICE_URL:http://dms-audit-service:8082}
-    llm-service-url: ${LLM_SERVICE_URL:http://dms-llm-service:8085}
+    admin-service-url: ${ADMIN_SERVICE_URL:http://dms-admin-service:8080}
+    audit-service-url: ${AUDIT_SERVICE_URL:http://dms-audit-service:8080}
+    llm-service-url: ${LLM_SERVICE_URL:http://dms-llm-service:8080}
 
 logging:
   level:

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dms-service-urls-configmap
+  namespace: dms-dev
+data:
+  apigateway.service: "http://dms-api-gateway-service.dms-dev.svc.cluster.local:8080"
+  admin.service: "http://dms-admin-service.dms-dev.svc.cluster.local:8080"
+  audit.service: "http://dms-audit-service.dms-dev.svc.cluster.local:8080"
+  compliance.service: "http://dms-compliance-service.dms-dev.svc.cluster.local:8080"
+  document.service: "http://dms-document-service.dms-dev.svc.cluster.local:8080"
+  llm.service: "http://dms-llm-service.dms-dev.svc.cluster.local:8080"

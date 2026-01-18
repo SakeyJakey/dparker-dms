@@ -33,7 +33,7 @@ spring:
     baseline-on-migrate: true
 
 server:
-  port: ${PORT:8082}
+  port: ${PORT:8080}
   error:
     include-message: always
 

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dms-prod-frontend
+  labels:
+    istio-injection: enabled
+    environment: prod
+    app: dms
+    tier: frontend

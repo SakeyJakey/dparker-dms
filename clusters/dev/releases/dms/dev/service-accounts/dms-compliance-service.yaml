@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dms-compliance-service
+  namespace: dms-dev
+  labels:
+    app: dms-compliance-service
+    service: compliance

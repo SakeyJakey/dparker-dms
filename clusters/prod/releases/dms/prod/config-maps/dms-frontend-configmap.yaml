@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dms-service-urls-configmap
+  namespace: dms-prod-frontend
+data:
+  apigateway.service: "http://dms-api-gateway-service.dms-prod.svc.cluster.local:8080"

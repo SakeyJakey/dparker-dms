@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dms-llm-service
+  namespace: dms-dev
+  labels:
+    app: dms-llm-service
+    service: llm

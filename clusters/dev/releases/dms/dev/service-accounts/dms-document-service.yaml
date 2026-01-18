@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dms-document-service
+  namespace: dms-dev
+  labels:
+    app: dms-document-service
+    service: document

@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dms-frontend-service-internal
+  namespace: dms-uat-frontend
+spec:
+  hosts:
+    - "dms.uat.lvad.lvfs.net"
+  gateways:
+    - istio-ingress-internal/default-gateway-uat-internal
+  http:
+    - match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            host: dms-frontend-service.dms-uat-frontend.svc.cluster.local
+            port:
+              number: 8080
+      timeout: 120s
+      corsPolicy:
+        allowOrigins:
+          - exact: https://dms.uat.lvad.lvfs.net
+        allowMethods:
+          - POST
+          - GET
+          - OPTIONS
+          - PATCH
+          - PUT
+          - DELETE
+        allowHeaders:
+          - Authorization
+          - Content-Type
+          - Accept
+          - Origin
+          - User-Agent
+        allowCredentials: true

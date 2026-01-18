@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dms-prod
+  labels:
+    istio-injection: enabled
+    environment: prod
+    app: dms

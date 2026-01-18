@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dms-frontend-service
+  namespace: dms-dev-frontend
+  labels:
+    app: dms-frontend-service
+    service: frontend

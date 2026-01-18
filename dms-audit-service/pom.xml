@@ -20,7 +20,7 @@
     
     <properties>
         <java.version>25</java.version>
-        <azure-sdk.version>1.48.0</azure-sdk.version>
+        <azure-sdk.version>${azure-sdk.version}</azure-sdk.version>
     </properties>
     
     <dependencies>
@@ -50,6 +50,7 @@
         <dependency>
             <groupId>com.azure.spring</groupId>
             <artifactId>spring-cloud-azure-starter-keyvault-secrets</artifactId>
+            <version>${spring-cloud-azure.version}</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>

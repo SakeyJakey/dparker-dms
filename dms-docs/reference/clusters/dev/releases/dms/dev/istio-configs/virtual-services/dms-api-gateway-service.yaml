@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dms-api-gateway-service-internal
+  namespace: dms-dev
+spec:
+  hosts:
+    - "dms.dev.lvad.lvfs.net"
+  gateways:
+    - istio-ingress-internal/default-gateway-dev-internal
+  http:
+    # Route API calls from frontend to API Gateway
+    - match:
+        - uri:
+            prefix: "/api"
+      route:
+        - destination:
+            host: dms-api-gateway-service.dms-dev.svc.cluster.local
+            port:
+              number: 8080
+      timeout: 120s
+      retries:
+        attempts: 3
+        perTryTimeout: 10s
+      corsPolicy:
+        allowOrigins:
+          - exact: https://dms.dev.lvad.lvfs.net
+        allowMethods:
+          - POST
+          - GET
+          - OPTIONS
+          - PATCH
+          - PUT
+          - DELETE
+        allowHeaders:
+          - Authorization
+          - Content-Type
+          - Accept
+          - Origin
+          - User-Agent
+        allowCredentials: true

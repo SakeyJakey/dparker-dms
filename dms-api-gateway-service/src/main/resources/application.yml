@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: dms-api-gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: admin-service
+          uri: ${dms.services.admin-service-url:http://dms-admin-service:8080}
+          predicates:
+            - Path=/api/admin/**
+        - id: audit-service
+          uri: ${dms.services.audit-service-url:http://dms-audit-service:8080}
+          predicates:
+            - Path=/api/audit/**
+        - id: document-service
+          uri: ${dms.services.document-service-url:http://dms-document-service:8080}
+          predicates:
+            - Path=/api/documents/**
+        - id: compliance-service
+          uri: ${dms.services.compliance-service-url:http://dms-compliance-service:8080}
+          predicates:
+            - Path=/api/compliance/**
+        - id: llm-service
+          uri: ${dms.services.llm-service-url:http://dms-llm-service:8080}
+          predicates:
+            - Path=/api/llm/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "https://dms.dev.lvad.lvfs.net"
+              - "https://dms.uat.lvad.lvfs.net"
+              - "https://dms.prod.lvad.lvfs.net"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+            maxAge: 3600
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Service URLs for routing
+dms:
+  services:
+    admin-service-url: ${ADMIN_SERVICE_URL:http://dms-admin-service:8080}
+    audit-service-url: ${AUDIT_SERVICE_URL:http://dms-audit-service:8080}
+    document-service-url: ${DOCUMENT_SERVICE_URL:http://dms-document-service:8080}
+    compliance-service-url: ${COMPLIANCE_SERVICE_URL:http://dms-compliance-service:8080}
+    llm-service-url: ${LLM_SERVICE_URL:http://dms-llm-service:8080}
+
+logging:
+  level:
+    root: INFO
+    com.davidparker.dms.gateway: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

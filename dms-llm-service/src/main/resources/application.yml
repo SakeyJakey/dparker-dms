@@ -11,7 +11,7 @@ spring:
               endpoint: https://dms-keyvault-${ENVIRONMENT:dev}.vault.azure.net
 
 server:
-  port: ${PORT:8085}
+  port: ${PORT:8080}
   error:
     include-message: always
 
@@ -36,8 +36,8 @@ azure:
 # Service URLs for inter-service communication
 dms:
   services:
-    audit-service-url: ${AUDIT_SERVICE_URL:http://dms-audit-service:8082}
-    document-service-url: ${DOCUMENT_SERVICE_URL:http://dms-document-service:8083}
+    audit-service-url: ${AUDIT_SERVICE_URL:http://dms-audit-service:8080}
+    document-service-url: ${DOCUMENT_SERVICE_URL:http://dms-document-service:8080}
 
 logging:
   level:
