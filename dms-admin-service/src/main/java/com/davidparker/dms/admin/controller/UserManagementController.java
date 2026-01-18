@@ -4,6 +4,7 @@ import com.davidparker.dms.admin.dto.UserCreateRequest;
 import com.davidparker.dms.admin.dto.UserUpdateRequest;
 import com.davidparker.dms.admin.model.User;
 import com.davidparker.dms.admin.service.UserManagementService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +35,12 @@ public class UserManagementController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateRequest request) {
         return ResponseEntity.ok(userManagementService.createUser(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<User> updateUser(@PathVariable UUID id, @Valid @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(userManagementService.updateUser(id, request));
     }
 

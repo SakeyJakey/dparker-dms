@@ -1,24 +1,26 @@
 {
   "name": "dms-frontend-service",
   "version": "1.0.0",
-  "description": "DMS Frontend - Angular 25 application with MSAL authentication",
+  "description": "DMS Frontend - Angular 21 application with MSAL authentication",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "audit": "npm audit --audit-level=moderate",
+    "audit:fix": "npm audit fix"
   },
   "dependencies": {
-    "@angular/animations": "^25.0.0",
-    "@angular/common": "^25.0.0",
-    "@angular/compiler": "^25.0.0",
-    "@angular/core": "^25.0.0",
-    "@angular/forms": "^25.0.0",
-    "@angular/material": "^25.0.0",
-    "@angular/platform-browser": "^25.0.0",
-    "@angular/platform-browser-dynamic": "^25.0.0",
-    "@angular/router": "^25.0.0",
+    "@angular/animations": "^21.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/material": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.0.0",
+    "@angular/router": "^21.0.0",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@ngrx/store": "^18.0.0",
     "@ngrx/effects": "^18.0.0",
@@ -29,10 +31,14 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^25.0.0",
-    "@angular/cli": "^25.0.0",
-    "@angular/compiler-cli": "^25.0.0",
+    "@angular-devkit/build-angular": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
     "@types/node": "^20.0.0",
     "typescript": "~5.6.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   }
 }

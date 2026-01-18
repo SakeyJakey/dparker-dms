@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,9 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final ApplicationIsolationFilter applicationIsolationFilter;
+    private final CorsFilter corsFilter;
 
-    public SecurityConfig(ApplicationIsolationFilter applicationIsolationFilter) {
+    public SecurityConfig(ApplicationIsolationFilter applicationIsolationFilter, CorsFilter corsFilter) {
         this.applicationIsolationFilter = applicationIsolationFilter;
+        this.corsFilter = corsFilter;
     }
 
     @Bean
@@ -35,7 +38,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/admin/**").hasRole("DMS.Admin")
                 .anyRequest().authenticated()
             )
+            .addFilterBefore(corsFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(applicationIsolationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new SecurityHeadersConfig(), UsernamePasswordAuthenticationFilter.class)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(csrf -> csrf.disable())
             .build();

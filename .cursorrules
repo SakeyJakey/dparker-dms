@@ -4,3 +4,158 @@
 - Always use and only use `davidparker-lv-bmth` as the GitHub user for this repository
 - All commits, pull requests, and GitHub-related operations must use `davidparker-lv-bmth` as the user identifier
 
+## Technology Stack Requirements
+
+### Backend
+- **Java 25 LTS** - All backend services must use Java 25
+- **Spring Boot 3.4.x** - Framework version
+- **Maven** - Build tool
+- **JUnit 5** - Testing framework
+- **Mockito** - Mocking framework
+
+### Frontend
+- **Angular 21** - Frontend framework (NOT Angular 25)
+- **TypeScript** - Language
+- **Angular Material 21** - UI component library
+- **MSAL Angular** - Azure AD authentication
+
+### Infrastructure & Deployment
+- **Azure AKS (Azure Kubernetes Service)** - Container orchestration platform
+- **Flux** - GitOps configuration management for Kubernetes
+- **Istio** - Service mesh for microservices communication
+- **Docker** - Containerization
+- **Kubernetes** - Container orchestration
+
+### Security & Compliance
+- **Zero CVE Dependencies** - All dependencies must be free from known CVEs
+- **OWASP Dependency Check** - Automated vulnerability scanning required
+- **Regular Security Audits** - Dependencies must be scanned before each release
+- **Dependency Updates** - Regular updates to patch vulnerabilities
+
+## Code Quality Standards
+
+### Unit Test Coverage
+- **Minimum 90% code coverage** is required for all services
+- All unit tests must be written using JUnit 5 and Mockito
+- Tests must be stable, repeatable, and run in CI/CD pipelines
+- All services must have comprehensive test suites covering:
+  - Controllers (all endpoints)
+  - Services (all business logic)
+  - Repositories (data access layer)
+  - Exception handlers
+  - Security configurations
+- Test coverage reports must be generated and verified before merging
+- JaCoCo must be configured with 90% threshold enforcement
+
+### Frontend Standards
+- **WCAG 2.1 Level AA compliance** is mandatory for all UI components
+- All user interfaces must be:
+  - Accessible to users with disabilities
+  - Keyboard navigable
+  - Screen reader compatible
+  - High contrast compliant (4.5:1 ratio minimum)
+  - Responsive and mobile-friendly
+- Use semantic HTML elements
+- Provide ARIA labels where appropriate
+- Ensure focus indicators are visible
+- Test with screen readers (NVDA, JAWS, VoiceOver)
+- All forms must have proper labels and error messages
+- Color must not be the only means of conveying information
+
+### Security Standards
+- **No CVE Vulnerabilities** - All dependencies must be scanned and free from CVEs
+- **OWASP Dependency Check** - Must run in CI/CD pipeline
+- **Dependency Updates** - Regular security updates required
+- **Vulnerability Scanning** - Automated scanning before each build
+- **Security Headers** - All services must include security headers
+- **Input Validation** - All inputs must be validated
+- **SQL Injection Prevention** - Use parameterized queries (JPA)
+- **XSS Protection** - Sanitize all user inputs
+
+### Infrastructure Standards
+- **Azure AKS** - All services deployed to Azure Kubernetes Service
+- **Flux GitOps** - Configuration managed via Flux for:
+  - Kubernetes manifests
+  - ConfigMaps
+  - Secrets
+  - Service configurations
+- **Istio Service Mesh** - Required for:
+  - Service-to-service communication
+  - Traffic management
+  - Security policies
+  - Observability
+  - mTLS between services
+- **Container Security** - All containers must be scanned for vulnerabilities
+- **Image Scanning** - Container images scanned before deployment
+
+## Dependency Management
+
+### CVE Prevention
+- **OWASP Dependency Check Maven Plugin** - Required in all POMs
+- **npm audit** - Required for frontend dependencies
+- **Automated Scanning** - CI/CD must fail if CVEs detected
+- **Regular Updates** - Dependencies updated monthly
+- **Security Advisories** - Monitor and patch immediately
+- **Dependency Whitelist** - Only approved dependencies allowed
+
+### Version Management
+- **Java 25 LTS** - Strict version requirement
+- **Angular 21** - Strict version requirement (NOT 25)
+- **Spring Boot 3.4.x** - Compatible with Java 25
+- **Azure SDK** - Latest stable versions
+- **Security Patches** - Applied immediately
+
+## Deployment Standards
+
+### Kubernetes
+- **Azure AKS** - Primary deployment platform
+- **Helm Charts** - Package management (if used)
+- **Flux** - GitOps configuration management
+- **Resource Limits** - All pods must have resource limits
+- **Health Checks** - Liveness and readiness probes required
+- **Service Discovery** - Kubernetes DNS for service-to-service communication
+
+### Service Mesh (Istio)
+- **mTLS** - Mutual TLS required between services
+- **Traffic Policies** - Defined via Istio VirtualServices
+- **Circuit Breakers** - Implemented via Istio
+- **Retry Policies** - Configured via Istio
+- **Rate Limiting** - Enforced via Istio
+- **Observability** - Metrics, logs, traces via Istio
+
+### GitOps (Flux)
+- **Flux Controllers** - GitRepository, Kustomization, HelmRepository
+- **Configuration as Code** - All K8s configs in Git
+- **Automated Sync** - Flux automatically syncs from Git
+- **Environment Separation** - Separate Flux namespaces per environment
+- **Secret Management** - Flux with Sealed Secrets or External Secrets Operator
+
+## Build & CI/CD Requirements
+
+### Maven Builds
+- **OWASP Dependency Check** - Must pass before build
+- **JaCoCo Coverage** - Must meet 90% threshold
+- **Tests** - All tests must pass
+- **No CVEs** - Build fails if CVEs detected
+
+### Frontend Builds
+- **npm audit** - Must pass with no vulnerabilities
+- **Angular 21** - Version must be exactly 21.x
+- **TypeScript** - Strict mode enabled
+- **Linting** - ESLint/Angular lint must pass
+
+### CI/CD Pipeline
+- **Dependency Scanning** - OWASP + npm audit
+- **Test Execution** - All tests must pass
+- **Coverage Verification** - 90% minimum
+- **Security Scanning** - Container image scanning
+- **Flux Sync** - Automated deployment via Flux
+- **Istio Validation** - Service mesh policies validated
+
+## Application Identifier
+
+- All application identifiers must use `davidparker-lv-bmth` as specified
+- Storage containers: `davidparker-lv-bmth-documents`
+- Application role: `DMS.davidparker-lv-bmth`
+- Key Vault secrets prefixed with `davidparker-lv-bmth-` where applicable
+

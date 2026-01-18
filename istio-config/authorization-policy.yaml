@@ -1,0 +1,32 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: dms-services-authz
+  namespace: dms-system
+spec:
+  selector:
+    matchLabels:
+      app: dms-service
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: ["cluster.local/ns/dms-system/sa/dms-admin-service"]
+      to:
+        - operation:
+            methods: ["GET", "POST", "PUT", "DELETE"]
+            paths: ["/api/v1/*"]
+    - from:
+        - source:
+            principals: ["cluster.local/ns/dms-system/sa/dms-document-service"]
+      to:
+        - operation:
+            methods: ["GET", "POST"]
+            paths: ["/api/v1/documents/*"]
+    - from:
+        - source:
+            principals: ["cluster.local/ns/dms-system/sa/dms-audit-service"]
+      to:
+        - operation:
+            methods: ["POST"]
+            paths: ["/api/v1/audit/events"]

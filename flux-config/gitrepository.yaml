@@ -1,0 +1,12 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: dms-config
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/davidparker-lv-bmth/dparker-dms
+  ref:
+    branch: main
+  secretRef:
+    name: dms-git-credentials
