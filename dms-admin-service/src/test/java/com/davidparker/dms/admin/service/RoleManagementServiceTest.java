@@ -51,7 +51,7 @@ class RoleManagementServiceTest {
 
         testRole = Role.builder()
             .id(roleId)
-            .applicationName("TEST_ROLE")
+            .name("TEST_ROLE")
             .description("Test Role")
             .permissions(new HashSet<>())
             .createdAt(Instant.now())
@@ -59,7 +59,7 @@ class RoleManagementServiceTest {
 
         testPermission = Permission.builder()
             .id(permissionId)
-            .applicationName("TEST_PERMISSION")
+            .name("TEST_PERMISSION")
             .description("Test Permission")
             .resourceType("Document")
             .createdAt(Instant.now())
