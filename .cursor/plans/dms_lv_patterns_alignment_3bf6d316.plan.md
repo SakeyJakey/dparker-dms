@@ -4,226 +4,226 @@ overview: Align all DMS services with LV standard patterns for Dockerfiles, appl
 todos:
   - id: pom-admin-parent
     content: "Update dms-admin-service/pom.xml: Change parent from spring-boot-starter-parent to dms-parent (com.davidparker.dms:dms-parent:1.0.0-SNAPSHOT)"
-    status: pending
+    status: completed
   - id: pom-audit-parent
     content: "Update dms-audit-service/pom.xml: Change parent to dms-parent, remove duplicated properties"
-    status: pending
+    status: completed
   - id: pom-document-parent
     content: "Update dms-document-service/pom.xml: Change parent to dms-parent"
-    status: pending
+    status: completed
   - id: pom-compliance-parent
     content: "Update dms-compliance-service/pom.xml: Change parent to dms-parent"
-    status: pending
+    status: completed
   - id: pom-llm-parent
     content: "Update dms-llm-service/pom.xml: Change parent to dms-parent"
-    status: pending
+    status: completed
   - id: pom-core-parent
     content: "Update dms-core-service/pom.xml: Change parent to dms-parent"
-    status: pending
+    status: completed
   - id: dockerfile-admin-update
     content: "Update dms-admin-service/Dockerfile: Use maven:3.9-eclipse-temurin-25, add health check, add curl install"
-    status: pending
+    status: completed
   - id: dockerfile-admin-dev
     content: "Create dms-admin-service/Dockerfile.dev: Multi-stage build with Maven, port 8081, health check"
-    status: pending
+    status: completed
   - id: dockerfile-admin-prod
     content: "Create dms-admin-service/Dockerfile.prod: Distroless + OpenTelemetry, expects pre-built JAR"
-    status: pending
+    status: completed
   - id: dockerfile-audit-update
     content: "Update dms-audit-service/Dockerfile: Same pattern as admin"
-    status: pending
+    status: completed
   - id: dockerfile-audit-dev
     content: Create dms-audit-service/Dockerfile.dev
-    status: pending
+    status: completed
   - id: dockerfile-audit-prod
     content: Create dms-audit-service/Dockerfile.prod
-    status: pending
+    status: completed
   - id: dockerfile-document-update
     content: Update dms-document-service/Dockerfile
-    status: pending
+    status: completed
   - id: dockerfile-document-dev
     content: Create dms-document-service/Dockerfile.dev
-    status: pending
+    status: completed
   - id: dockerfile-document-prod
     content: Create dms-document-service/Dockerfile.prod
-    status: pending
+    status: completed
   - id: dockerfile-compliance-update
     content: Update dms-compliance-service/Dockerfile
-    status: pending
+    status: completed
   - id: dockerfile-compliance-dev
     content: Create dms-compliance-service/Dockerfile.dev
-    status: pending
+    status: completed
   - id: dockerfile-compliance-prod
     content: Create dms-compliance-service/Dockerfile.prod
-    status: pending
+    status: completed
   - id: dockerfile-llm-update
     content: Update dms-llm-service/Dockerfile
-    status: pending
+    status: completed
   - id: dockerfile-llm-dev
     content: Create dms-llm-service/Dockerfile.dev
-    status: pending
+    status: completed
   - id: dockerfile-llm-prod
     content: Create dms-llm-service/Dockerfile.prod
-    status: pending
+    status: completed
   - id: dockerfile-gateway-update
     content: "Update dms-api-gateway-service/Dockerfile: Add health check"
-    status: pending
+    status: completed
   - id: dockerfile-gateway-dev
     content: Create dms-api-gateway-service/Dockerfile.dev
-    status: pending
+    status: completed
   - id: dockerfile-gateway-prod
     content: Create dms-api-gateway-service/Dockerfile.prod
-    status: pending
+    status: completed
   - id: dockerfile-frontend-entrypoint
     content: "Create dms-frontend-service/entrypoint.sh: Copy from sickpay-frontend-service pattern"
-    status: pending
+    status: completed
   - id: dockerfile-frontend-update
     content: "Update dms-frontend-service/Dockerfile: Reference entrypoint.sh, ensure port 8080"
-    status: pending
+    status: completed
   - id: dockerfile-frontend-prod
     content: Create dms-frontend-service/Dockerfile.prod
-    status: pending
+    status: completed
   - id: appconfig-admin-base
     content: "Update dms-admin-service/application.yml: Change database-* to SPRING_DATASOURCE_URL/DB_USER/DB_PASSWORD, add Azure AD config section"
-    status: pending
+    status: completed
   - id: appconfig-admin-dev
     content: "Create dms-admin-service/application-dev.yml: H2 database, port 8081, debug logging, bypass auth"
-    status: pending
+    status: completed
   - id: appconfig-admin-docker
     content: "Create dms-admin-service/application-docker.yml: PostgreSQL with docker hostnames, port 8081"
-    status: pending
+    status: completed
   - id: appconfig-admin-prod
     content: "Create dms-admin-service/application-prod.yml: PostgreSQL, port 8080, Azure AD, OpenTelemetry"
-    status: pending
+    status: completed
   - id: appconfig-admin-test
     content: "Create dms-admin-service/application-test.yml: H2 in-memory, port 0 (random)"
-    status: pending
+    status: completed
   - id: appconfig-audit-base
     content: "Update dms-audit-service/application.yml: Standardize DB env vars, add Azure AD"
-    status: pending
+    status: completed
   - id: appconfig-audit-dev
     content: "Create dms-audit-service/application-dev.yml: port 8082, H2, bypass auth"
-    status: pending
+    status: completed
   - id: appconfig-audit-docker
     content: Create dms-audit-service/application-docker.yml
-    status: pending
+    status: completed
   - id: appconfig-audit-prod
     content: Create dms-audit-service/application-prod.yml
-    status: pending
+    status: completed
   - id: appconfig-document-base
     content: "Update dms-document-service/application.yml: Standardize DB env vars"
-    status: pending
+    status: completed
   - id: appconfig-document-dev
     content: "Create dms-document-service/application-dev.yml: port 8083"
-    status: pending
+    status: completed
   - id: appconfig-document-docker
     content: Create dms-document-service/application-docker.yml
-    status: pending
+    status: completed
   - id: appconfig-document-prod
     content: Create dms-document-service/application-prod.yml
-    status: pending
+    status: completed
   - id: appconfig-compliance-base
     content: Update dms-compliance-service/application.yml
-    status: pending
+    status: completed
   - id: appconfig-compliance-dev
     content: "Create dms-compliance-service/application-dev.yml: port 8084"
-    status: pending
+    status: completed
   - id: appconfig-compliance-docker
     content: Create dms-compliance-service/application-docker.yml
-    status: pending
+    status: completed
   - id: appconfig-compliance-prod
     content: Create dms-compliance-service/application-prod.yml
-    status: pending
+    status: completed
   - id: appconfig-llm-base
     content: Update dms-llm-service/application.yml
-    status: pending
+    status: completed
   - id: appconfig-llm-dev
     content: "Create dms-llm-service/application-dev.yml: port 8085"
-    status: pending
+    status: completed
   - id: appconfig-llm-docker
     content: Create dms-llm-service/application-docker.yml
-    status: pending
+    status: completed
   - id: appconfig-llm-prod
     content: Create dms-llm-service/application-prod.yml
-    status: pending
+    status: completed
   - id: appconfig-gateway-base
     content: "Update dms-api-gateway-service/application.yml: Add local CORS origins"
-    status: pending
+    status: completed
   - id: appconfig-gateway-dev
     content: Create dms-api-gateway-service/application-dev.yml
-    status: pending
+    status: completed
   - id: appconfig-gateway-docker
     content: Create dms-api-gateway-service/application-docker.yml
-    status: pending
+    status: completed
   - id: appconfig-gateway-prod
     content: Create dms-api-gateway-service/application-prod.yml
-    status: pending
+    status: completed
   - id: security-admin-devmode
     content: "Update dms-admin-service/SecurityConfig.java: Add profile-based dev mode (bypass auth in dev/docker)"
-    status: pending
+    status: completed
   - id: security-audit-devmode
     content: "Update dms-audit-service/SecurityConfig.java: Add profile-based dev mode"
-    status: pending
+    status: completed
   - id: security-document-devmode
     content: "Update dms-document-service/SecurityConfig.java: Add profile-based dev mode"
-    status: pending
+    status: completed
   - id: security-compliance-devmode
     content: "Update dms-compliance-service/SecurityConfig.java: Add profile-based dev mode"
-    status: pending
+    status: completed
   - id: security-llm-devmode
     content: "Update dms-llm-service/SecurityConfig.java: Add profile-based dev mode"
-    status: pending
+    status: completed
   - id: docker-compose-env-vars
     content: "Update docker-compose.yml: Replace database-connection-string with SPRING_DATASOURCE_URL, database-username with DB_USER, database-password with DB_PASSWORD"
-    status: pending
+    status: completed
   - id: docker-compose-profiles
     content: "Update docker-compose.yml: Add SPRING_PROFILES_ACTIVE=docker to all services"
-    status: pending
+    status: completed
   - id: docker-compose-healthchecks
     content: "Update docker-compose.yml: Standardize health checks using wget (works in alpine)"
-    status: pending
+    status: completed
   - id: docker-compose-frontend
     content: "Update docker-compose.yml: Add API_GATEWAY_URL env var to frontend, fix health check"
-    status: pending
+    status: completed
   - id: configmap-azure-create
     content: Create dms-docs/reference/clusters/dev/releases/dms/dev/config-maps/dms-azure-configmap.yaml
-    status: pending
+    status: completed
   - id: configmap-database-create
     content: Create dms-docs/reference/clusters/dev/releases/dms/dev/config-maps/dms-database-configmap.yaml
-    status: pending
+    status: completed
   - id: configmap-urls-update
     content: "Update dms-service-urls-configmap.yaml: Add environment variable format keys"
-    status: pending
+    status: completed
   - id: k8s-admin-envvars
     content: "Update dms-admin-service/k8s-deployment.yaml: Change DATABASE_URL to SPRING_DATASOURCE_URL, add DB_USER, DB_PASSWORD, Azure AD env vars"
-    status: pending
+    status: completed
   - id: k8s-audit-envvars
     content: "Update dms-audit-service/k8s-deployment.yaml: Same env var updates"
-    status: pending
+    status: completed
   - id: k8s-document-envvars
     content: "Update dms-document-service/k8s-deployment.yaml: Same env var updates"
-    status: pending
+    status: completed
   - id: doc-dockerfile-patterns
     content: Create dms-docs/patterns/LV-DOCKERFILE_PATTERNS.md
-    status: pending
+    status: completed
   - id: doc-appconfig-patterns
     content: Create dms-docs/patterns/LV-APPLICATION_CONFIG_PATTERNS.md
-    status: pending
+    status: completed
   - id: doc-database-patterns
     content: Create dms-docs/patterns/LV-DATABASE_CONNECTIVITY_PATTERNS.md
-    status: pending
+    status: completed
   - id: doc-docker-compose-patterns
     content: Create dms-docs/patterns/LV-DOCKER_COMPOSE_PATTERNS.md
-    status: pending
+    status: completed
   - id: verify-maven-build
     content: Run mvn clean package -DskipTests from root to verify all services build
-    status: pending
+    status: completed
   - id: verify-docker-build
     content: Run docker compose build --no-cache to verify all Dockerfiles work
-    status: pending
+    status: completed
   - id: verify-docker-up
     content: Run docker compose up and verify all services start and communicate
-    status: pending
+    status: completed
 ---
 
 # DMS LV Patterns Alignment Plan - Comprehensive Update
