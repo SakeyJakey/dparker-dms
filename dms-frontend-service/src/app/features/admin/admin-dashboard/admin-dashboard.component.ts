@@ -20,6 +20,8 @@ import { ApiService } from '../../../core/services/api.service';
           <li><a routerLink="/admin/users" aria-label="User management">👥 User Management</a></li>
           <li><a routerLink="/admin/roles" aria-label="Role management">🔐 Role Management</a></li>
           <li><a routerLink="/admin/applications" aria-label="Application management">📱 Application Management</a></li>
+          <li><a routerLink="/admin/webhooks" aria-label="Webhook management">🔗 Webhook Management</a></li>
+          <li><a routerLink="/admin/api-keys" aria-label="API key management">🔑 API Key Management</a></li>
           <li><a routerLink="/compliance/audit-logs" aria-label="Audit logs">📋 Audit Logs</a></li>
         </ul>
       </nav>

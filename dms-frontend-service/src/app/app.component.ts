@@ -18,6 +18,7 @@ import { NotificationService, Notification } from './core/services/notification.
           <ul class="nav-menu" role="menubar">
             <li role="none"><a routerLink="/documents" routerLinkActive="active" role="menuitem">Documents</a></li>
             <li role="none"><a routerLink="/llm" routerLinkActive="active" role="menuitem">AI Query</a></li>
+            <li role="none"><a routerLink="/analytics" routerLinkActive="active" role="menuitem">Analytics</a></li>
             <li role="none"><a routerLink="/admin" routerLinkActive="active" role="menuitem">Admin</a></li>
             <li role="none"><a routerLink="/compliance" routerLinkActive="active" role="menuitem">Compliance</a></li>
           </ul>

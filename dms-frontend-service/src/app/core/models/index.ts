@@ -131,3 +131,137 @@ export interface ErasureResponse {
   deletedCount: number;
   retainedCount: number;
 }
+
+// --- Workflow ---
+export interface DocumentWorkflow {
+  id: string;
+  documentId: string;
+  status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'REJECTED' | 'PUBLISHED' | 'ARCHIVED';
+  previousStatus: string;
+  assignedTo: string;
+  comments: string;
+  dueDate: string;
+  createdAt: string;
+}
+
+export interface WorkflowTransitionRequest {
+  targetStatus: string;
+  assignedTo?: string;
+  comments?: string;
+  dueDate?: string;
+}
+
+// --- Bulk Operations ---
+export interface BulkOperationRequest {
+  documentIds: string[];
+  action: 'DELETE' | 'CLASSIFY' | 'TAG' | 'ARCHIVE';
+  targetClassification?: string;
+  tags?: string[];
+}
+
+export interface BulkOperationResponse {
+  totalRequested: number;
+  successCount: number;
+  failureCount: number;
+  failedIds: string[];
+  message: string;
+}
+
+// --- Search ---
+export interface SearchRequest {
+  query: string;
+  applicationId?: string;
+  classifications?: string[];
+  dateFrom?: string;
+  dateTo?: string;
+  tags?: string[];
+  page?: number;
+  size?: number;
+}
+
+// --- Analytics ---
+export interface DashboardAnalytics {
+  totalDocuments: number;
+  documentsThisMonth: number;
+  documentsThisWeek: number;
+  documentsByClassification: Record<string, number>;
+  pciDocuments: number;
+  gdprDocuments: number;
+  storageUsedMb: number;
+  activeUsers: number;
+  totalQueries: number;
+}
+
+// --- Collaboration ---
+export interface DocumentComment {
+  id: string;
+  documentId: string;
+  userId: string;
+  username: string;
+  content: string;
+  parentId: string | null;
+  createdAt: string;
+}
+
+export interface DocumentShare {
+  id: string;
+  documentId: string;
+  sharedWithUserId: string;
+  sharedByUserId: string;
+  permission: 'VIEW' | 'EDIT' | 'COMMENT';
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface DocumentFavorite {
+  id: string;
+  userId: string;
+  documentId: string;
+  createdAt: string;
+}
+
+// --- Templates ---
+export interface DocumentTemplate {
+  id: string;
+  name: string;
+  description: string;
+  defaultClassification: string;
+  contentTemplate: string;
+  metadataSchema: string;
+  applicationId: string;
+  active: boolean;
+  createdAt: string;
+}
+
+// --- Webhooks ---
+export interface Webhook {
+  id: string;
+  name: string;
+  url: string;
+  eventTypes: string;
+  applicationId: string;
+  active: boolean;
+  createdAt: string;
+}
+
+// --- API Keys ---
+export interface ApiKey {
+  id: string;
+  name: string;
+  keyPrefix: string;
+  scopes: string;
+  applicationId: string;
+  active: boolean;
+  expiresAt: string | null;
+  lastUsedAt: string | null;
+  createdAt: string;
+}
+
+export interface ApiKeyCreateResponse {
+  id: string;
+  name: string;
+  key: string;
+  prefix: string;
+  scopes: string;
+  message: string;
+}
