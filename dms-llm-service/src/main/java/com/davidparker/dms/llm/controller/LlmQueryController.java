@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/llm")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "LLM Query", description = "AI-powered natural language document queries")
 public class LlmQueryController {
 
     private final SecureLlmQueryService llmQueryService;

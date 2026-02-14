@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/documents/search")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Document Search", description = "Full-text and advanced document search")
 public class SearchController {
 
     private final SearchService searchService;

@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/audit")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Audit Logging", description = "Centralized audit trail with event logging and querying")
 public class AuditController {
 
     private final AuditLogRepository auditLogRepository;

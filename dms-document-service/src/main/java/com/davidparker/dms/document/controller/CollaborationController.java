@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/documents")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Collaboration", description = "Document comments, sharing, favorites, and recent documents")
 public class CollaborationController {
 
     private final CollaborationService collaborationService;

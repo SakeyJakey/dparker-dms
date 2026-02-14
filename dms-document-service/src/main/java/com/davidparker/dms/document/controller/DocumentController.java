@@ -11,10 +11,13 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/documents")
+@Tag(name = "Document Management", description = "Document CRUD operations, upload, download")
 public class DocumentController {
 
     private final DocumentService documentService;

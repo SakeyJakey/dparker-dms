@@ -11,11 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/roles")
 @PreAuthorize("hasRole('DMS.Admin')")
+@Tag(name = "Role Management", description = "CRUD operations for roles and permission assignments")
 public class RoleManagementController {
 
     private final RoleManagementService roleManagementService;
