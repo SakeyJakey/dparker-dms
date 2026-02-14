@@ -12,7 +12,7 @@ This project maintains a **zero CVE policy** - all dependencies must be free fro
 ## Technology Stack
 
 ### Backend
-- **Java 25 LTS** - Required version
+- **Java 21 LTS** - Required version
 - **Spring Boot 3.4.x** - Framework
 - **Maven** - Build tool
 

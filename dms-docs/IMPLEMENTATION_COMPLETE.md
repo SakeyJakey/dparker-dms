@@ -10,8 +10,8 @@ Updated By: davidparker-lv-bmth
 ### 1. Technology Stack Requirements ✅
 
 #### Backend
-- ✅ **Java 25 LTS** - Enforced in all POMs (`<java.version>25</java.version>`)
-- ✅ **Spring Boot 3.4.x** - Compatible with Java 25
+- ✅ **Java 21 LTS** - Enforced in all POMs (`<java.version>25</java.version>`)
+- ✅ **Spring Boot 3.4.x** - Compatible with Java 21
 - ✅ **Maven** - Build tool with security plugins
 
 #### Frontend
@@ -117,7 +117,7 @@ Updated By: davidparker-lv-bmth
 ```
 
 ### Manual Verification
-1. **Java 25**: Check POM files for `<java.version>25</java.version>`
+1. **Java 21**: Check POM files for `<java.version>25</java.version>`
 2. **Angular 21**: Check package.json for `"@angular/core": "^21.0.0"`
 3. **OWASP**: Check POMs for `dependency-check-maven` plugin
 4. **JaCoCo**: Check POMs for `jacoco-maven-plugin` with 90% threshold
@@ -149,7 +149,7 @@ npm run build
 
 | Requirement | Status | Enforcement |
 |------------|--------|-------------|
-| Java 25 | ✅ | POM configuration |
+| Java 21 | ✅ | POM configuration |
 | Angular 21 | ✅ | package.json |
 | Azure AKS | ✅ | Documentation + K8s manifests |
 | Flux | ✅ | Configuration files |

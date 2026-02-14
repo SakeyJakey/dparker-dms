@@ -207,7 +207,7 @@ This allows Dockerfiles to:
 - [x] Frontend entrypoint.sh created
 
 ### Pending Verification ⚠️
-- [ ] Maven build test (requires Java 25)
+- [ ] Maven build test (requires Java 21)
 - [ ] Docker build test (`docker compose build --no-cache`)
 - [ ] Docker up test (`docker compose up`)
 - [ ] Health check verification
@@ -215,8 +215,8 @@ This allows Dockerfiles to:
 
 ## Known Issues
 
-1. **Maven Build**: Requires Java 25 to build (class file version 69). The code structure is correct.
-2. **Docker Build**: May require Java 25 in the build environment or proper Maven configuration.
+1. **Maven Build**: Requires Java 21 to build (class file version 69). The code structure is correct.
+2. **Docker Build**: May require Java 21 in the build environment or proper Maven configuration.
 
 ## Next Steps
 

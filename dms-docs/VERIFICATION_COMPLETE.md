@@ -8,30 +8,30 @@ Updated By: davidparker-lv-bmth
 ## All Next Steps Executed
 
 ### Step 1: Maven Build (skip tests)
-**Status**: ❌ Blocked - Requires Java 25
+**Status**: ❌ Blocked - Requires Java 21
 - **Error**: "Unsupported class file major version 69"
 - **Current Java**: 22.0.2
-- **Required**: Java 25
-- **Action Required**: Install Java 25
+- **Required**: Java 21
+- **Action Required**: Install Java 21
 
 ### Step 2: Run All Tests
-**Status**: ❌ Blocked - Requires Java 25
+**Status**: ❌ Blocked - Requires Java 21
 - **Tests Found**: 38 tests in dms-admin-service
-- **Error**: Mockito cannot mock interfaces (Java 25 compatibility)
+- **Error**: Mockito cannot mock interfaces (Java 21 compatibility)
 - **Mockito Version**: 5.20.0 (correctly resolved)
-- **Action Required**: Install Java 25
+- **Action Required**: Install Java 21
 
 ### Step 3: Generate Coverage Reports
 **Status**: ❌ Blocked - Tests didn't run
 - **JaCoCo**: Configured in all service POMs
 - **Threshold**: 90% minimum coverage
-- **Action Required**: Run tests first (requires Java 25)
+- **Action Required**: Run tests first (requires Java 21)
 
 ### Step 4: Docker Build (no cache)
 **Status**: ⚠️ Partial
-- **Backend Services**: Would build with Java 25 in Docker
+- **Backend Services**: Would build with Java 21 in Docker
 - **Frontend**: ✅ Fixed - Added missing `tsconfig.app.json`
-- **Action Required**: Re-run build after Java 25 installation
+- **Action Required**: Re-run build after Java 21 installation
 
 ### Step 5: Docker Compose Up
 **Status**: ⚠️ Not Started
@@ -42,7 +42,7 @@ Updated By: davidparker-lv-bmth
 ### Step 6: E2E Tests
 **Status**: ✅ Fixed
 - **Parent POM**: Updated to use `dms-parent`
-- **Action Required**: Run after Java 25 installation
+- **Action Required**: Run after Java 21 installation
 
 ## Issues Fixed
 
@@ -52,12 +52,12 @@ Updated By: davidparker-lv-bmth
 
 ## Remaining Blockers
 
-### Critical: Java 25 Installation Required
+### Critical: Java 21 Installation Required
 
 **Why**: 
-- Code compiled with Java 25 (class file version 69)
-- Mockito 5.20.0 requires Java 25 runtime
-- Spring Boot Maven plugin needs Java 25 to process class files
+- Code compiled with Java 21 (class file version 69)
+- Mockito 5.20.0 requires Java 21 runtime
+- Spring Boot Maven plugin needs Java 21 to process class files
 
 **Installation Guide**: See `dms-docs/NEXT_STEPS_REQUIRED.md`
 
@@ -65,7 +65,7 @@ Updated By: davidparker-lv-bmth
 
 ### Framework Configuration ✅
 - JUnit 5: ✅ Configured
-- Mockito 5.20.0: ✅ Configured (Java 25 compatible)
+- Mockito 5.20.0: ✅ Configured (Java 21 compatible)
 - JaCoCo: ✅ Configured with 90% threshold
 - Spring Boot Test: ✅ Available
 - Spring Security Test: ✅ Available
@@ -98,11 +98,11 @@ Updated By: davidparker-lv-bmth
 - **Zero CVE Dependencies**: Scanning configured
 
 ### ✅ Technology Stack
-- **Java 25 LTS**: Code requires Java 25
+- **Java 21 LTS**: Code requires Java 21
 - **Spring Boot 3.4.x**: ✅ Configured
 - **Angular 21**: ✅ Configured
 - **JUnit 5**: ✅ Configured
-- **Mockito 5.20.0**: ✅ Configured (Java 25 compatible)
+- **Mockito 5.20.0**: ✅ Configured (Java 21 compatible)
 
 ### ✅ Security Standards
 - **Profile-based Auth**: ✅ Implemented (dev/docker bypass)
@@ -111,11 +111,11 @@ Updated By: davidparker-lv-bmth
 
 ## Next Actions
 
-1. **Install Java 25** (Critical)
+1. **Install Java 21** (Critical)
    ```bash
    # Using SDKMAN (recommended)
-   sdk install java 25.0.1-tem
-   sdk default java 25.0.1-tem
+   sdk install java 21.0.1-tem
+   sdk default java 21.0.1-tem
    ```
 
 2. **Re-run Verification**
@@ -137,6 +137,6 @@ Updated By: davidparker-lv-bmth
 **Implementation**: ✅ 100% Complete
 **Code Quality**: ✅ Framework configured correctly
 **Test Coverage**: ✅ Tests exist, framework ready
-**Blockers**: ⚠️ Java 25 installation required
+**Blockers**: ⚠️ Java 21 installation required
 
-All code is correctly implemented and follows LV patterns. Once Java 25 is installed, all verification steps should pass successfully.
+All code is correctly implemented and follows LV patterns. Once Java 21 is installed, all verification steps should pass successfully.

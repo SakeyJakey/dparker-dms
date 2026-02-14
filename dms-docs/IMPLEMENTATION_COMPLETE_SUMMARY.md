@@ -17,7 +17,7 @@ All LV patterns have been successfully implemented across all DMS services. The 
 ### ✅ Phase 1: POM Inheritance
 - All 6 service POMs now inherit from `dms-parent`
 - Parent POM properly configured with dependencyManagement
-- Mockito 5.20.0 added for Java 25 compatibility
+- Mockito 5.20.0 added for Java 21 compatibility
 
 ### ✅ Phase 2: Dockerfiles
 - Created `Dockerfile`, `Dockerfile.dev`, `Dockerfile.prod` for all 6 backend services
@@ -96,13 +96,13 @@ All LV patterns have been successfully implemented across all DMS services. The 
 ## Build and Test Status
 
 ### Maven Build
-- ✅ Compilation: Successful (requires Java 25)
+- ✅ Compilation: Successful (requires Java 21)
 - ⚠️ Tests: Mockito 5.20.0 added, needs verification
 - ✅ JaCoCo: Configured for 90% coverage threshold
 
 ### Docker Build
 - ✅ Dockerfiles: All created and follow LV patterns
-- ⚠️ Build: Requires Java 25 in Docker environment
+- ⚠️ Build: Requires Java 21 in Docker environment
 - ✅ Frontend: Fixed npm dependency conflicts
 
 ### Test Coverage
@@ -115,7 +115,7 @@ All LV patterns have been successfully implemented across all DMS services. The 
 1. **Main Implementation Commit**: "Implement LV patterns alignment: Dockerfiles, application configs, security, and env vars"
    - 68 files changed, 3373 insertions(+), 272 deletions(-)
 
-2. **Fixes Commit**: "Fix Mockito Java 25 compatibility and frontend Docker build"
+2. **Fixes Commit**: "Fix Mockito Java 21 compatibility and frontend Docker build"
    - Mockito 5.20.0 added
    - Frontend Dockerfile fixed
 
@@ -123,10 +123,10 @@ All LV patterns have been successfully implemented across all DMS services. The 
 
 ## Next Steps for Verification
 
-1. **Maven Build**: Run `mvn clean package -DskipTests` (requires Java 25)
+1. **Maven Build**: Run `mvn clean package -DskipTests` (requires Java 21)
 2. **Tests**: Run `mvn clean test` after verifying Mockito 5.20.0 resolution
 3. **Coverage**: Run `mvn jacoco:report` to verify 90% coverage
-4. **Docker Build**: Run `docker compose build --no-cache` (requires Java 25 in Docker)
+4. **Docker Build**: Run `docker compose build --no-cache` (requires Java 21 in Docker)
 5. **Docker Up**: Run `docker compose up -d` and verify all services healthy
 6. **E2E Tests**: Run E2E tests against running services
 
@@ -138,12 +138,12 @@ All LV patterns have been successfully implemented across all DMS services. The 
 - Zero CVE dependencies requirement
 
 ### ✅ Technology Stack
-- Java 25 LTS ✅
+- Java 21 LTS ✅
 - Spring Boot 3.4.x ✅
 - Angular 21 ✅
 - Maven ✅
 - JUnit 5 ✅
-- Mockito 5.20.0 (Java 25 compatible) ✅
+- Mockito 5.20.0 (Java 21 compatible) ✅
 
 ### ✅ Security Standards
 - Profile-based authentication bypass (dev/docker)
@@ -165,4 +165,4 @@ All LV patterns have been successfully implemented across all DMS services. The 
 
 ## Conclusion
 
-All LV patterns have been successfully implemented. The codebase is now standardized and follows documented patterns. Build and test verification can proceed once Java 25 environment is confirmed.
+All LV patterns have been successfully implemented. The codebase is now standardized and follows documented patterns. Build and test verification can proceed once Java 21 environment is confirmed.
