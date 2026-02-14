@@ -1,0 +1,89 @@
+---
+description: Project build, compilation, and quality standards - Java 25 LTS, Angular 21, vulnerability-free, 90% test coverage
+alwaysApply: true
+---
+
+# Build and Quality Standards
+
+## Java Version Requirement
+
+**All services MUST use Java 25 LTS JDK but compile to Java 22 bytecode for compatibility with Lombok and other annotation processors.**
+
+- All `pom.xml` files must specify `<java.version>25</java.version>` (JDK version)
+- Maven compiler plugin must target Java 22 bytecode while using Java 25 compiler:
+  ```xml
+  <configuration>
+      <source>${java.version}</source>
+      <target>22</target>
+      <release>22</release>
+  </configuration>
+  ```
+- **Rationale**: Java 25 JDK provides latest language features, but compiling to Java 22 bytecode ensures compatibility with Lombok and other annotation processors that may not yet fully support Java 25
+- All `pom.xml` files must set `<maven.compiler.target>22</maven.compiler.target>` (bytecode target)
+- Docker builds must use `maven:3.9-eclipse-temurin-25` base image
+- Runtime images must use `eclipse-temurin:25-jre`
+
+## Angular Version Requirement
+
+**The frontend MUST use Angular 21.**
+
+- `package.json` must specify `"@angular/core": "^21.0.0"` or compatible Angular 21.x versions
+- All Angular dependencies must be compatible with Angular 21
+- TypeScript version must be `>=5.9.0 and <6.0.0` (e.g., `"typescript": "~5.9.2"`)
+- Node.js version must be `^20.19.0 || ^22.12.0 || ^24.0.0`
+
+## Vulnerability-Free Requirement
+
+**The project MUST be vulnerability-free.**
+
+- All dependencies must be scanned for known vulnerabilities
+- Use `npm audit` for frontend dependencies and fix all high/critical vulnerabilities
+- Use `mvn dependency-check` or similar for Java dependencies
+- CI/CD pipelines must fail builds if vulnerabilities are detected
+- Regular dependency updates must be performed to address security advisories
+
+## Unit Test Coverage Requirement
+
+**All services, including the frontend, MUST maintain 90% unit test coverage minimum.**
+
+### Java Services
+
+- JaCoCo Maven plugin must be configured with 90% coverage thresholds:
+  ```xml
+  <limit>
+      <counter>LINE</counter>
+      <value>COVEREDRATIO</value>
+      <minimum>0.90</minimum>
+  </limit>
+  <limit>
+      <counter>BRANCH</counter>
+      <value>COVEREDRATIO</value>
+      <minimum>0.90</minimum>
+  </limit>
+  ```
+- Coverage checks can be skipped for production K8s deployments using `-Dskip.coverage.check=true`
+- Local development and CI/CD must enforce coverage requirements
+
+### Frontend (Angular)
+
+- Karma/Jasmine unit tests must achieve 90% coverage:
+  ```javascript
+  coverageReporter: {
+    check: {
+      global: {
+        statements: 90,
+        branches: 90,
+        functions: 90,
+        lines: 90
+      }
+    }
+  }
+  ```
+- Coverage can be skipped for production K8s deployments using `SKIP_COVERAGE_CHECK=true` environment variable
+- Local development and CI/CD must enforce coverage requirements
+
+## Enforcement
+
+- All pull requests must pass build, vulnerability scan, and coverage checks
+- CI/CD pipelines must validate these requirements before merging
+- Documentation must be updated when these standards change

@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+- All services are stored within their own service folder.
+- All code should be maintained in the separate service folder 
+- Scripts should be maintained within {{app/servicename}}-docs/scripts folder
+- All docs are to be created and maintained in {{app/servicename}}-docs/docs
+- All Infrastructure is to be stored within {{app/servicename}}-docs/infrastrcuture
+- Always add a date time stamp when updating documentation

@@ -1,0 +1,47 @@
+---
+alwaysApply: true
+---
+
+# Git Commit Author Configuration
+
+## Mandatory Commit Author
+
+**ALL commits in this workspace MUST use the following author information:**
+
+- **Name:** `davidparker-lv-bmth`
+- **Email:** `davidparker-lv-bmth@lv.com` (or appropriate corporate email if required)
+
+## Enforcement
+
+When making commits via terminal commands or Git operations:
+
+1. **Always set the author explicitly** using `--author` flag:
+   ```bash
+   git commit --author="davidparker-lv-bmth <davidparker-lv-bmth@lv.com>" -m "message"
+   ```
+
+2. **Or configure Git globally for this workspace:**
+   ```bash
+   git config user.name "davidparker-lv-bmth"
+   git config user.email "davidparker-lv-bmth@lv.com"
+   ```
+
+3. **For amending existing commits:**
+   ```bash
+   git commit --amend --author="davidparker-lv-bmth <davidparker-lv-bmth@lv.com>" --no-edit
+   ```
+
+## Verification
+
+After committing, verify the author:
+```bash
+git log --format="%an <%ae>" -1
+```
+
+The output should show: `davidparker-lv-bmth <davidparker-lv-bmth@lv.com>`
+
+## Notes
+
+- This rule applies to ALL repositories within the workspace
+- The AI assistant should always use the `--author` flag when making commits
+- If the email format differs (e.g., corporate email), update this rule accordingly
