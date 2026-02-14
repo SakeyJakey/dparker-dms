@@ -13,6 +13,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.davidparker.dms.admin.exception.DuplicateResourceException;
+import com.davidparker.dms.admin.exception.ResourceNotFoundException;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +53,7 @@ public class ApplicationManagementService {
     @PreAuthorize("hasRole('DMS.Admin')")
     public RegisteredApplication getApplication(UUID id) {
         return applicationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Application not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Application", id.toString()));
     }
 
     @PreAuthorize("hasRole('DMS.Admin')")
@@ -58,10 +61,10 @@ public class ApplicationManagementService {
     public RegisteredApplication provisionApplication(ApplicationProvisionRequest request) {
         // Check if application already exists
         if (applicationRepository.existsByEntraAppId(request.getEntraAppId())) {
-            throw new RuntimeException("Application with Entra App ID already exists");
+            throw new DuplicateResourceException("Application with Entra App ID already exists");
         }
         if (applicationRepository.existsByApplicationName(request.getApplicationName())) {
-            throw new RuntimeException("Application with this name already exists");
+            throw new DuplicateResourceException("Application with this name already exists");
         }
 
         String containerName = "davidparker-lv-bmth-documents";
@@ -103,7 +106,7 @@ public class ApplicationManagementService {
     @Transactional
     public RegisteredApplication updateApplicationStatus(UUID id, RegisteredApplication.ApplicationStatus status) {
         RegisteredApplication application = applicationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Application not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Application", id.toString()));
 
         application.setStatus(status);
         application = applicationRepository.save(application);
@@ -126,7 +129,7 @@ public class ApplicationManagementService {
     @Transactional
     public void deprovisionApplication(UUID id) {
         RegisteredApplication application = applicationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Application not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Application", id.toString()));
 
         applicationRepository.delete(application);
 

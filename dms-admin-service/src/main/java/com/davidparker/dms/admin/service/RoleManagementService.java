@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.davidparker.dms.admin.exception.ResourceNotFoundException;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class RoleManagementService {
     @PreAuthorize("hasRole('DMS.Admin')")
     public Role getRole(UUID id) {
         return roleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", id.toString()));
     }
 
     @PreAuthorize("hasRole('DMS.Admin')")
@@ -72,7 +74,7 @@ public class RoleManagementService {
     @Transactional
     public Role updateRole(UUID id, RoleUpdateRequest request) {
         Role role = roleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", id.toString()));
 
         if (request.getDescription() != null) {
             role.setDescription(request.getDescription());
@@ -97,7 +99,7 @@ public class RoleManagementService {
     @Transactional
     public void deleteRole(UUID id) {
         Role role = roleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", id.toString()));
 
         roleRepository.delete(role);
 
@@ -116,9 +118,9 @@ public class RoleManagementService {
     @Transactional
     public Role assignPermission(UUID roleId, UUID permissionId) {
         Role role = roleRepository.findById(roleId)
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", roleId.toString()));
         Permission permission = permissionRepository.findById(permissionId)
-            .orElseThrow(() -> new RuntimeException("Permission not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Permission", permissionId.toString()));
 
         role.getPermissions().add(permission);
         role = roleRepository.save(role);
@@ -141,7 +143,7 @@ public class RoleManagementService {
     @Transactional
     public Role removePermission(UUID roleId, UUID permissionId) {
         Role role = roleRepository.findById(roleId)
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", roleId.toString()));
 
         role.getPermissions().removeIf(p -> p.getId().equals(permissionId));
         role = roleRepository.save(role);

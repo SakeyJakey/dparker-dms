@@ -1,9 +1,7 @@
-package com.davidparker.dms.admin.exception;
+package com.davidparker.dms.document.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,15 +20,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicateResource(DuplicateResourceException e) {
-        Map<String, Object> error = new HashMap<>();
-        error.put("error", e.getMessage());
-        error.put("code", "DUPLICATE_RESOURCE");
-        error.put("status", HttpStatus.CONFLICT.value());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-    }
-
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException e) {
         Map<String, Object> error = new HashMap<>();
@@ -46,21 +35,6 @@ public class GlobalExceptionHandler {
         error.put("error", e.getMessage());
         error.put("status", HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(error);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("errors", errors);
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(Exception.class)

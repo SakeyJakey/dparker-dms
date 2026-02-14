@@ -1,5 +1,6 @@
 package com.davidparker.dms.document.service;
 
+import com.davidparker.dms.document.exception.ResourceNotFoundException;
 import com.davidparker.dms.document.model.Document;
 import com.davidparker.dms.document.repository.DocumentRepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class PreviewService {
 
     public PreviewResult generatePreview(UUID documentId, int page) {
         Document doc = documentRepository.findById(documentId)
-            .orElseThrow(() -> new RuntimeException("Document not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Document", documentId.toString()));
 
         String name = doc.getName().toLowerCase();
         String contentType;
@@ -47,7 +48,7 @@ public class PreviewService {
 
     public Map<String, Object> getPreviewInfo(UUID documentId) {
         Document doc = documentRepository.findById(documentId)
-            .orElseThrow(() -> new RuntimeException("Document not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Document", documentId.toString()));
 
         String name = doc.getName().toLowerCase();
         boolean previewable = name.endsWith(".pdf") || name.endsWith(".txt") ||

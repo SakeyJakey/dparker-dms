@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.davidparker.dms.admin.exception.ResourceNotFoundException;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -65,7 +67,7 @@ public class ApiKeyService {
 
     public void revokeApiKey(UUID id) {
         ApiKey apiKey = apiKeyRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("API key not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("ApiKey", id.toString()));
         apiKey.setActive(false);
         apiKeyRepository.save(apiKey);
 
@@ -79,7 +81,7 @@ public class ApiKeyService {
 
     public Map<String, Object> regenerateApiKey(UUID id) {
         ApiKey existing = apiKeyRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("API key not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("ApiKey", id.toString()));
         existing.setActive(false);
         apiKeyRepository.save(existing);
         return createApiKey(existing.getName(), existing.getScopes(), existing.getApplicationId());

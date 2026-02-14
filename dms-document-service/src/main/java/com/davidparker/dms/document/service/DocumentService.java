@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.davidparker.dms.document.exception.ResourceNotFoundException;
+
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class DocumentService {
         // Verify application exists
         applicationServiceClient.getApplication(applicationId)
             .blockOptional()
-            .orElseThrow(() -> new RuntimeException("Application not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId.toString()));
 
         Document document = Document.builder()
             .applicationId(applicationId)
@@ -102,7 +104,7 @@ public class DocumentService {
         Document document = documentRepository.findByIdAndApplicationId(id, applicationId)
             .stream()
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Document not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Document", id.toString()));
 
         // Log audit event
         Map<String, Object> auditEvent = new HashMap<>();
@@ -125,7 +127,7 @@ public class DocumentService {
         Document document = documentRepository.findByIdAndApplicationId(id, applicationId)
             .stream()
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Document not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Document", id.toString()));
 
         document.setName(updatedDocument.getName());
         document.setClassification(updatedDocument.getClassification());
@@ -155,7 +157,7 @@ public class DocumentService {
         Document document = documentRepository.findByIdAndApplicationId(id, applicationId)
             .stream()
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Document not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Document", id.toString()));
 
         documentRepository.delete(document);
 
@@ -177,7 +179,7 @@ public class DocumentService {
         Document document = documentRepository.findByIdAndApplicationId(id, applicationId)
             .stream()
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Document not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Document", id.toString()));
 
         // Log audit event
         Map<String, Object> auditEvent = new HashMap<>();

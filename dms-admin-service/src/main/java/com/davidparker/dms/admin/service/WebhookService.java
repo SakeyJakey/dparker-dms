@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.davidparker.dms.admin.exception.ResourceNotFoundException;
+
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +41,7 @@ public class WebhookService {
 
     public Webhook updateWebhook(UUID id, Webhook update) {
         Webhook existing = webhookRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Webhook not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Webhook", id.toString()));
         existing.setName(update.getName());
         existing.setUrl(update.getUrl());
         existing.setEventTypes(update.getEventTypes());
@@ -53,7 +55,7 @@ public class WebhookService {
 
     public String testWebhook(UUID id) {
         Webhook webhook = webhookRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Webhook not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Webhook", id.toString()));
         try {
             WebClient.create(webhook.getUrl())
                 .post()
