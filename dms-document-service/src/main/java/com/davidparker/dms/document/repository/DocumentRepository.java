@@ -26,4 +26,13 @@ public interface DocumentRepository extends JpaRepository<Document, UUID> {
     List<Document> findByApplicationId(UUID applicationId);
     
     List<Document> findByIdAndApplicationId(UUID id, UUID applicationId);
+
+    @Query("SELECT d FROM Document d WHERE LOWER(d.name) LIKE LOWER(CONCAT('%', :query, '%'))")
+    Page<Document> searchByName(@Param("query") String query, org.springframework.data.domain.Pageable pageable);
+
+    long countByApplicationId(UUID applicationId);
+
+    long countByClassification(Document.Classification classification);
+
+    long countByPciRelevantTrue();
 }
