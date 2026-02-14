@@ -91,7 +91,7 @@
             <optional>true</optional>
         </dependency>
         
-        <!-- Testing - Mockito 5.20.0 for Java 25 support -->
+        <!-- Testing - Mockito 5.20.0 for Java 21+ support -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
