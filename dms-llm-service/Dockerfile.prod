@@ -2,7 +2,7 @@
 FROM busybox AS downloader
 RUN wget -O /opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
 
-FROM mcr.microsoft.com/openjdk/jdk:25-distroless
+FROM mcr.microsoft.com/openjdk/jdk:21-distroless
 EXPOSE 8080
 ARG version
 
