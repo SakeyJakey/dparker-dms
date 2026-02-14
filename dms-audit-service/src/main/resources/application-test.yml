@@ -3,9 +3,6 @@ spring:
   autoconfigure:
     exclude:
       - com.azure.spring.cloud.autoconfigure.implementation.keyvault.secrets.AzureKeyVaultSecretAutoConfiguration
-      - com.azure.spring.cloud.autoconfigure.implementation.storage.blob.AzureBlobStorageAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
 
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -35,7 +32,10 @@ server:
 security:
   bypass-auth: true
 
-dms:
-  services:
-    audit-service-url: http://localhost:9999
-    document-service-url: http://localhost:9998
+azure:
+  tenant-id: ""
+  client-id: ""
+  jwk-set-uri: ""
+  event-hubs:
+    connection-string: ""
+    hub-name: audit-logs

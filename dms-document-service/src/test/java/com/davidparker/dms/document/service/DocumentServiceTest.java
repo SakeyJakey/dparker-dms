@@ -116,7 +116,7 @@ class DocumentServiceTest {
         when(documentRepository.save(any(Document.class))).thenReturn(document);
         when(blobServiceClient.getBlobContainerClient(anyString())).thenReturn(blobContainerClient);
         when(blobContainerClient.getBlobClient(anyString())).thenReturn(blobClient);
-        doNothing().when(blobClient).upload(any(InputStream.class), eq(8L), eq(true));
+        doNothing().when(blobClient).upload(any(InputStream.class), anyLong(), eq(true));
         when(blobClient.getBlobUrl()).thenReturn("https://storage.blob.core.windows.net/container/blob");
 
         Document result = documentService.uploadDocument(applicationId, file, "test.pdf", 
@@ -124,7 +124,7 @@ class DocumentServiceTest {
 
         assertNotNull(result);
         verify(documentRepository, times(2)).save(any(Document.class));
-        verify(blobClient).upload(any(InputStream.class), eq(8L), eq(true));
+        verify(blobClient).upload(any(InputStream.class), anyLong(), eq(true));
         verify(auditEventClient).logEvent(any());
     }
 

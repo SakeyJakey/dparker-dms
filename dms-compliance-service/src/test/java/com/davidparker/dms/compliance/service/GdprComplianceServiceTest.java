@@ -46,8 +46,8 @@ class GdprComplianceServiceTest {
         ErasureResponse response = gdprComplianceService.processErasureRequest(request);
 
         assertNotNull(response);
-        assertTrue(response.getDocumentsDeleted() >= 0);
-        assertTrue(response.getDocumentsRetained() >= 0);
+        assertTrue(response.getDeletedCount() >= 0);
+        assertTrue(response.getRetainedCount() >= 0);
         verify(auditEventClient).logEvent(any());
     }
 

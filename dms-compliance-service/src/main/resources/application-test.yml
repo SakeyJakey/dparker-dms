@@ -1,0 +1,26 @@
+# Test profile
+spring:
+  autoconfigure:
+    exclude:
+      - com.azure.spring.cloud.autoconfigure.implementation.keyvault.secrets.AzureKeyVaultSecretAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+  
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          enabled: false
+
+server:
+  port: 0
+
+security:
+  bypass-auth: true
+
+dms:
+  services:
+    audit-service-url: http://localhost:9999
+    document-service-url: http://localhost:9998
+    admin-service-url: http://localhost:9997
