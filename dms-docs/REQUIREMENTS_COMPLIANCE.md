@@ -8,9 +8,9 @@ Updated By: davidparker-lv-bmth
 ## ✅ Updated Requirements
 
 ### Technology Stack
-- ✅ **Java 25 LTS** - Enforced in all POMs
+- ✅ **Java 21 LTS** - Enforced in all POMs
 - ✅ **Angular 21** - Updated in package.json (was 25, now 21)
-- ✅ **Spring Boot 3.4.x** - Compatible with Java 25
+- ✅ **Spring Boot 3.4.x** - Compatible with Java 21
 - ✅ **Azure AKS** - Documented in infrastructure requirements
 - ✅ **Flux** - GitOps configuration created
 - ✅ **Istio** - Service mesh configuration created
@@ -43,7 +43,7 @@ Updated By: davidparker-lv-bmth
 - ✅ All POMs updated with:
   - JaCoCo plugin (90% threshold)
   - OWASP Dependency Check plugin (failBuildOnCVSS=0)
-  - Java 25 version
+  - Java 21 version
 - ✅ OWASP suppression files created for all services
 
 ### Frontend
@@ -81,7 +81,7 @@ Run the verification script:
 ```
 
 This script checks:
-- Java 25 version
+- Java 21 version
 - Angular 21 version
 - OWASP plugin in all POMs
 - JaCoCo plugin in all POMs
@@ -115,7 +115,7 @@ npm run build
 
 | Requirement | Status | Verification |
 |------------|--------|--------------|
-| Java 25 | ✅ | Enforced in POMs |
+| Java 21 | ✅ | Enforced in POMs |
 | Angular 21 | ✅ | Updated in package.json |
 | Azure AKS | ✅ | Documented |
 | Flux | ✅ | Configuration created |

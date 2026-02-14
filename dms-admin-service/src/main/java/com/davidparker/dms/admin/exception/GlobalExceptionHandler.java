@@ -13,6 +13,33 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException e) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        error.put("code", "RESOURCE_NOT_FOUND");
+        error.put("status", HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateResource(DuplicateResourceException e) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        error.put("code", "DUPLICATE_RESOURCE");
+        error.put("status", HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException e) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        error.put("code", "INVALID_STATE");
+        error.put("status", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.badRequest().body(error);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException e) {
         Map<String, Object> error = new HashMap<>();

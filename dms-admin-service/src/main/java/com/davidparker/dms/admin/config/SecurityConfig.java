@@ -2,6 +2,7 @@ package com.davidparker.dms.admin.config;
 
 import com.davidparker.dms.admin.security.AadJwtAuthenticationConverter;
 import com.davidparker.dms.admin.security.ApplicationIsolationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -18,25 +19,23 @@ import org.springframework.web.filter.CorsFilter;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final ApplicationIsolationFilter applicationIsolationFilter;
-    private final CorsFilter corsFilter;
+    @Autowired(required = false)
+    private ApplicationIsolationFilter applicationIsolationFilter;
+
+    @Autowired(required = false)
+    private CorsFilter corsFilter;
+
     private final Environment environment;
 
-    public SecurityConfig(ApplicationIsolationFilter applicationIsolationFilter, 
-                         CorsFilter corsFilter,
-                         Environment environment) {
-        this.applicationIsolationFilter = applicationIsolationFilter;
-        this.corsFilter = corsFilter;
+    public SecurityConfig(Environment environment) {
         this.environment = environment;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Check if we're in dev/docker mode
         boolean isDevMode = isDevMode();
         
         if (isDevMode) {
-            // In dev mode, allow all requests without authentication
             return http
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .csrf(csrf -> csrf.disable())
@@ -44,8 +43,7 @@ public class SecurityConfig {
                 .build();
         }
         
-        // Production mode - require authentication
-        return http
+        http
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwt -> jwt
                     .jwtAuthenticationConverter(aadJwtConverter())
@@ -56,17 +54,27 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/admin/**").hasRole("DMS.Admin")
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(applicationIsolationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new SecurityHeadersConfig(), UsernamePasswordAuthenticationFilter.class)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf(csrf -> csrf.disable())
-            .build();
+            .csrf(csrf -> csrf.disable());
+
+        if (corsFilter != null) {
+            http.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class);
+        }
+        if (applicationIsolationFilter != null) {
+            http.addFilterBefore(applicationIsolationFilter, UsernamePasswordAuthenticationFilter.class);
+        }
+        
+        return http.build();
     }
 
     private boolean isDevMode() {
-        String activeProfile = environment.getProperty("spring.profiles.active", "dev");
-        return "dev".equals(activeProfile) || "docker".equals(activeProfile);
+        String[] activeProfiles = environment.getActiveProfiles();
+        for (String profile : activeProfiles) {
+            if ("dev".equals(profile) || "docker".equals(profile) || "test".equals(profile)) {
+                return true;
+            }
+        }
+        return activeProfiles.length == 0;
     }
 
     @Bean

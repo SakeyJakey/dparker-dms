@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.davidparker.dms.admin.exception.ResourceNotFoundException;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class PermissionManagementService {
     @PreAuthorize("hasRole('DMS.Admin')")
     public Permission getPermission(UUID id) {
         return permissionRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Permission not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Permission", id.toString()));
     }
 
     @PreAuthorize("hasRole('DMS.Admin')")
@@ -67,7 +69,7 @@ public class PermissionManagementService {
     @Transactional
     public void deletePermission(UUID id) {
         Permission permission = permissionRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Permission not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Permission", id.toString()));
 
         permissionRepository.delete(permission);
 

@@ -1,63 +1,56 @@
 package com.davidparker.dms.admin.exception;
 
-import com.davidparker.dms.admin.dto.UserCreateRequest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest(GlobalExceptionHandlerTest.TestController.class)
 class GlobalExceptionHandlerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Test
+    void testHandleRuntimeException() {
+        RuntimeException ex = new RuntimeException("Test runtime exception");
+        ResponseEntity<Map<String, Object>> response = handler.handleRuntimeException(ex);
 
-    @RestController
-    @RequestMapping("/test")
-    static class TestController {
-        @PostMapping("/runtime")
-        public void throwRuntimeException() {
-            throw new RuntimeException("Test runtime exception");
-        }
-
-        @PostMapping("/validation")
-        public void validateRequest(@RequestBody UserCreateRequest request) {
-            // Validation will be handled by @Valid
-        }
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Test runtime exception", response.getBody().get("error"));
+        assertEquals(400, response.getBody().get("status"));
     }
 
     @Test
-    @WithMockUser(roles = "DMS.Admin")
-    void testRuntimeExceptionHandling() throws Exception {
-        mockMvc.perform(post("/test/runtime")
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.error").exists())
-            .andExpect(jsonPath("$.status").value(400));
+    @SuppressWarnings("unchecked")
+    void testHandleValidationExceptions() {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "object");
+        bindingResult.addError(new FieldError("object", "username", "Username is required"));
+        bindingResult.addError(new FieldError("object", "email", "Email must be valid"));
+        MethodArgumentNotValidException ex = new MethodArgumentNotValidException(null, bindingResult);
+
+        ResponseEntity<Map<String, Object>> response = handler.handleValidationExceptions(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        Map<String, String> errors = (Map<String, String>) response.getBody().get("errors");
+        assertEquals("Username is required", errors.get("username"));
+        assertEquals("Email must be valid", errors.get("email"));
     }
 
     @Test
-    @WithMockUser(roles = "DMS.Admin")
-    void testValidationExceptionHandling() throws Exception {
-        UserCreateRequest invalidRequest = new UserCreateRequest();
-        // Missing required fields
+    void testHandleGenericException() {
+        Exception ex = new Exception("Unexpected error");
+        ResponseEntity<Map<String, Object>> response = handler.handleGenericException(ex);
 
-        mockMvc.perform(post("/test/validation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest)))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.errors").exists());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("An unexpected error occurred", response.getBody().get("error"));
+        assertEquals(500, response.getBody().get("status"));
     }
 }

@@ -1,5 +1,5 @@
 # Development Dockerfile - builds within Docker
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ RUN mvn clean install -DskipTests -B
 WORKDIR /app/dms-compliance-service
 RUN mvn clean package -DskipTests -B
 
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
@@ -35,4 +35,4 @@ EXPOSE 8084
 HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
   CMD curl -f http://localhost:8084/actuator/health || exit 1
 
-ENTRYPOINT ["java", "-Dspring.classformat.ignore=true", "-Dspring.profiles.active=docker", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "app.jar"]

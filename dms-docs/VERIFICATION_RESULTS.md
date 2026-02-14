@@ -18,14 +18,14 @@ Updated By: davidparker-lv-bmth
 
 #### 1. Java Version Mismatch
 - **System Java**: Java 22.0.2
-- **Required**: Java 25 (for class file version 69)
+- **Required**: Java 21 (for class file version 69)
 - **Impact**: Maven build fails with "Unsupported class file major version 69"
-- **Solution**: Need Java 25 installed and configured
+- **Solution**: Need Java 21 installed and configured
 
 #### 2. Mockito Test Failures
 - **Status**: Mockito 5.20.0 is correctly resolved in dependency tree
 - **Issue**: Tests still failing with Mockito errors
-- **Root Cause**: May need Java 25 runtime for tests to work properly
+- **Root Cause**: May need Java 21 runtime for tests to work properly
 - **Tests Affected**: 38 tests in dms-admin-service
 
 #### 3. Frontend Build
@@ -47,7 +47,7 @@ Updated By: davidparker-lv-bmth
 ```
 Status: ❌ FAILED
 Error: Unsupported class file major version 69
-Reason: Java 22 installed, but code compiled with Java 25
+Reason: Java 22 installed, but code compiled with Java 21
 ```
 
 ### Step 2: Run All Tests
@@ -57,7 +57,7 @@ Tests Run: 38
 Failures: 0
 Errors: 38
 Skipped: 0
-Error: Mockito cannot mock interfaces (Java 25 compatibility issue)
+Error: Mockito cannot mock interfaces (Java 21 compatibility issue)
 ```
 
 ### Step 3: Generate Coverage Reports
@@ -70,7 +70,7 @@ Reason: Tests didn't run, so JaCoCo plugin wasn't executed
 ### Step 4: Docker Build
 ```
 Status: ⚠️ PARTIAL
-Backend Services: ✅ Would build with Java 25 in Docker
+Backend Services: ✅ Would build with Java 21 in Docker
 Frontend: ❌ Missing tsconfig.app.json
 ```
 
@@ -103,13 +103,13 @@ All services are currently running and healthy:
 
 ## Required Actions
 
-### 1. Install Java 25
+### 1. Install Java 21
 ```bash
 # Check available Java versions
 /usr/libexec/java_home -V
 
-# Install Java 25 (if available via Homebrew or SDKMAN)
-# Then set JAVA_HOME to Java 25
+# Install Java 21 (if available via Homebrew or SDKMAN)
+# Then set JAVA_HOME to Java 21
 export JAVA_HOME=$(/usr/libexec/java_home -v 25)
 ```
 
@@ -118,7 +118,7 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 25)
 - If missing, create Angular project structure or copy from template
 - Verify `angular.json` configuration
 
-### 3. Re-run Tests with Java 25
+### 3. Re-run Tests with Java 21
 ```bash
 export JAVA_HOME=$(/usr/libexec/java_home -v 25)
 mvn clean test
@@ -138,8 +138,8 @@ docker compose build --no-cache
 ## Conclusion
 
 **Implementation Status**: ✅ Complete
-**Build Status**: ⚠️ Requires Java 25
+**Build Status**: ⚠️ Requires Java 21
 **Runtime Status**: ✅ All services running and healthy
-**Test Status**: ⚠️ Requires Java 25 for Mockito compatibility
+**Test Status**: ⚠️ Requires Java 21 for Mockito compatibility
 
-The codebase is correctly configured. All issues are environment-related (Java version) or missing source files (frontend tsconfig). Once Java 25 is installed, all builds and tests should pass.
+The codebase is correctly configured. All issues are environment-related (Java version) or missing source files (frontend tsconfig). Once Java 21 is installed, all builds and tests should pass.

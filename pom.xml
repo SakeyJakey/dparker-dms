@@ -29,11 +29,11 @@
     </modules>
     
     <properties>
-        <java.version>25</java.version>
+        <java.version>21</java.version>
         <spring-cloud-azure.version>5.20.0</spring-cloud-azure.version>
         <azure-sdk.version>1.15.1</azure-sdk.version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
@@ -91,7 +91,7 @@
             <optional>true</optional>
         </dependency>
         
-        <!-- Testing - Mockito 5.20.0 for Java 25 support -->
+        <!-- Testing - Mockito 5.20.0 for Java 21+ support -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/compliance")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Compliance", description = "PCI-DSS, GDPR, and ISO 27001 compliance reporting and controls")
 public class ComplianceController {
 
     private final GdprComplianceService gdprComplianceService;

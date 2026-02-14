@@ -1,214 +1,102 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-
-interface Document {
-  id: string;
-  name: string;
-  classification: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { ApiService } from '../../../core/services/api.service';
+import { Document, PageResponse } from '../../../core/models';
 
 @Component({
   selector: 'app-document-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule],
   template: `
-    <div class="document-list-container" role="region" aria-label="Document list">
+    <div class="page-container" role="region" aria-label="Document list">
       <header class="page-header">
-        <h1 id="page-title">Documents</h1>
-        <button 
-          type="button" 
-          class="btn-primary"
-          (click)="openUploadDialog()"
-          aria-label="Upload new document">
-          Upload Document
-        </button>
+        <h1>Documents</h1>
+        <a routerLink="/documents/upload" class="btn btn-primary" aria-label="Upload new document">
+          + Upload Document
+        </a>
       </header>
 
       <div class="filters" role="search" aria-label="Filter documents">
-        <label for="classification-filter" class="sr-only">Filter by classification</label>
-        <select 
-          id="classification-filter"
-          [(ngModel)]="selectedClassification"
-          (change)="filterDocuments()"
-          aria-label="Document classification filter">
-          <option value="">All Classifications</option>
+        <label for="classification-filter">Classification:</label>
+        <select id="classification-filter" [(ngModel)]="selectedClassification" (change)="loadDocuments()" aria-label="Filter by classification">
+          <option value="">All</option>
           <option value="PUBLIC">Public</option>
           <option value="INTERNAL">Internal</option>
           <option value="CONFIDENTIAL">Confidential</option>
           <option value="RESTRICTED">Restricted</option>
+          <option value="PCI">PCI</option>
         </select>
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Search documents..." aria-label="Search documents" class="search-input" (keyup.enter)="loadDocuments()">
       </div>
 
-      <div *ngIf="loading" class="loading" role="status" aria-live="polite">
-        <span class="sr-only">Loading documents</span>
-        <span aria-hidden="true">Loading...</span>
-      </div>
+      <div *ngIf="loading" class="loading" role="status" aria-live="polite">Loading documents...</div>
+      <div *ngIf="error" class="error-banner" role="alert" aria-live="assertive">{{ error }}</div>
 
-      <div *ngIf="error" class="error" role="alert" aria-live="assertive">
-        <strong>Error:</strong> {{ error }}
-      </div>
-
-      <table *ngIf="!loading && !error && documents.length > 0" 
-             class="document-table"
-             role="table"
-             aria-label="Documents table">
+      <table *ngIf="!loading && documents.length > 0" class="data-table" role="table" aria-label="Documents">
         <thead>
-          <tr role="row">
-            <th scope="col">Name</th>
-            <th scope="col">Classification</th>
-            <th scope="col">Created</th>
-            <th scope="col">Actions</th>
-          </tr>
+          <tr><th scope="col">Name</th><th scope="col">Classification</th><th scope="col">Version</th><th scope="col">Created</th><th scope="col">Actions</th></tr>
         </thead>
         <tbody>
-          <tr *ngFor="let doc of documents; trackBy: trackByDocId" role="row">
-            <td>{{ doc.name }}</td>
-            <td>
-              <span class="badge badge-{{ doc.classification.toLowerCase() }}" 
-                    [attr.aria-label]="'Classification: ' + doc.classification">
-                {{ doc.classification }}
-              </span>
-            </td>
-            <td>{{ doc.createdAt | date:'short' }}</td>
-            <td>
-              <button 
-                type="button"
-                class="btn-link"
-                (click)="viewDocument(doc.id)"
-                [attr.aria-label]="'View document ' + doc.name">
-                View
-              </button>
-              <button 
-                type="button"
-                class="btn-link"
-                (click)="downloadDocument(doc.id)"
-                [attr.aria-label]="'Download document ' + doc.name">
-                Download
-              </button>
+          <tr *ngFor="let doc of documents; trackBy: trackById">
+            <td><a [routerLink]="['/documents', doc.id]" class="link">{{ doc.name }}</a></td>
+            <td><span class="badge" [class]="'badge-' + doc.classification.toLowerCase()">{{ doc.classification }}</span></td>
+            <td>v{{ doc.version }}</td>
+            <td>{{ doc.createdAt | date:'medium' }}</td>
+            <td class="actions">
+              <a [routerLink]="['/documents', doc.id]" class="btn btn-sm" [attr.aria-label]="'View ' + doc.name">View</a>
+              <button (click)="downloadDoc(doc)" class="btn btn-sm btn-outline" [attr.aria-label]="'Download ' + doc.name">Download</button>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <div *ngIf="!loading && !error && documents.length === 0" 
-           class="empty-state"
-           role="status"
-           aria-live="polite">
-        <p>No documents found.</p>
+      <div *ngIf="!loading && documents.length === 0" class="empty-state" role="status">
+        <p>No documents found. <a routerLink="/documents/upload">Upload your first document</a>.</p>
+      </div>
+
+      <div *ngIf="totalPages > 1" class="pagination" role="navigation" aria-label="Pagination">
+        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0" class="btn btn-sm">Previous</button>
+        <span class="page-info">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage >= totalPages - 1" class="btn btn-sm">Next</button>
       </div>
     </div>
   `,
   styles: [`
-    .document-list-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    h1 {
-      font-size: 2rem;
-      font-weight: 600;
-      color: #1976d2;
-    }
-    .btn-primary {
-      background-color: #1976d2;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 500;
-    }
-    .btn-primary:hover, .btn-primary:focus {
-      background-color: #1565c0;
-      outline: 2px solid #0d47a1;
-      outline-offset: 2px;
-    }
-    .btn-link {
-      background: none;
-      border: none;
-      color: #1976d2;
-      text-decoration: underline;
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      margin-right: 0.5rem;
-    }
-    .btn-link:hover, .btn-link:focus {
-      color: #1565c0;
-      outline: 2px solid #0d47a1;
-      outline-offset: 2px;
-    }
-    .filters {
-      margin-bottom: 1.5rem;
-    }
-    select {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-      min-width: 200px;
-    }
-    select:focus {
-      outline: 2px solid #1976d2;
-      outline-offset: 2px;
-    }
-    .document-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .document-table th {
-      background-color: #f5f5f5;
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      border-bottom: 2px solid #ddd;
-    }
-    .document-table td {
-      padding: 1rem;
-      border-bottom: 1px solid #eee;
-    }
-    .badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-    .badge-public { background-color: #e3f2fd; color: #1976d2; }
-    .badge-internal { background-color: #fff3e0; color: #f57c00; }
-    .badge-confidential { background-color: #fce4ec; color: #c2185b; }
-    .badge-restricted { background-color: #f3e5f5; color: #7b1fa2; }
-    .loading, .error, .empty-state {
-      padding: 2rem;
-      text-align: center;
-    }
-    .error {
-      background-color: #ffebee;
-      color: #c62828;
-      border: 1px solid #c62828;
-      border-radius: 4px;
-    }
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border-width: 0;
-    }
+    .page-container { max-width: 1200px; margin: 0 auto; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    h1 { font-size: 1.75rem; font-weight: 600; color: #1565c0; margin: 0; }
+    .filters { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filters label { font-weight: 500; color: #555; }
+    select, .search-input { padding: 0.5rem 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; }
+    select:focus, .search-input:focus { outline: 2px solid #1976d2; outline-offset: 2px; border-color: #1976d2; }
+    .search-input { min-width: 250px; }
+    .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .data-table th { background: #f5f5f5; padding: 0.75rem 1rem; text-align: left; font-weight: 600; font-size: 0.85rem; color: #555; border-bottom: 2px solid #e0e0e0; }
+    .data-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #f0f0f0; }
+    .data-table tr:hover { background: #fafafa; }
+    .badge { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: 500; }
+    .badge-public { background: #e3f2fd; color: #1565c0; }
+    .badge-internal { background: #fff3e0; color: #ef6c00; }
+    .badge-confidential { background: #fce4ec; color: #c2185b; }
+    .badge-restricted { background: #f3e5f5; color: #7b1fa2; }
+    .badge-pci { background: #ffebee; color: #b71c1c; }
+    .actions { display: flex; gap: 0.5rem; }
+    .link { color: #1976d2; text-decoration: none; font-weight: 500; }
+    .link:hover { text-decoration: underline; }
+    .btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; font-size: 0.9rem; }
+    .btn-primary { background: #1976d2; color: white; }
+    .btn-primary:hover { background: #1565c0; }
+    .btn-sm { padding: 0.3rem 0.75rem; font-size: 0.8rem; }
+    .btn-outline { background: white; border: 1px solid #ddd; color: #555; }
+    .btn-outline:hover { background: #f5f5f5; }
+    .btn:focus { outline: 2px solid #1976d2; outline-offset: 2px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .loading, .empty-state { padding: 3rem; text-align: center; color: #666; }
+    .error-banner { background: #ffebee; color: #c62828; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #c62828; }
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+    .page-info { color: #666; font-size: 0.9rem; }
   `]
 })
 export class DocumentListComponent implements OnInit {
@@ -216,55 +104,50 @@ export class DocumentListComponent implements OnInit {
   loading = false;
   error: string | null = null;
   selectedClassification = '';
+  searchQuery = '';
+  currentPage = 0;
+  totalPages = 0;
+  readonly applicationId = 'default';
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
-  ngOnInit() {
+  ngOnInit(): void { this.loadDocuments(); }
+
+  loadDocuments(): void {
+    this.loading = true;
+    this.error = null;
+    this.api.getDocuments(this.applicationId, this.currentPage, 20, this.selectedClassification || undefined)
+      .subscribe({
+        next: (response: PageResponse<Document>) => {
+          this.documents = response.content || [];
+          this.totalPages = response.totalPages;
+          this.loading = false;
+        },
+        error: () => {
+          this.error = 'Failed to load documents. Please try again.';
+          this.loading = false;
+        }
+      });
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
     this.loadDocuments();
   }
 
-  loadDocuments() {
-    this.loading = true;
-    this.error = null;
-    
-    const url = 'http://localhost:8083/api/v1/documents';
-    const params = this.selectedClassification 
-      ? { classification: this.selectedClassification }
-      : {};
-
-    this.http.get<{ content: Document[] }>(url, { params }).subscribe({
-      next: (response) => {
-        this.documents = response.content || [];
-        this.loading = false;
+  downloadDoc(doc: Document): void {
+    this.api.downloadDocument(doc.id).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = window.document.createElement('a');
+        a.href = url;
+        a.download = doc.name;
+        a.click();
+        window.URL.revokeObjectURL(url);
       },
-      error: (err) => {
-        this.error = 'Failed to load documents. Please try again.';
-        this.loading = false;
-        console.error('Error loading documents:', err);
-      }
+      error: () => this.error = 'Failed to download document.'
     });
   }
 
-  filterDocuments() {
-    this.loadDocuments();
-  }
-
-  openUploadDialog() {
-    // TODO: Implement upload dialog
-    alert('Upload dialog will be implemented');
-  }
-
-  viewDocument(id: string) {
-    // TODO: Navigate to document detail
-    console.log('View document:', id);
-  }
-
-  downloadDocument(id: string) {
-    // TODO: Implement download
-    console.log('Download document:', id);
-  }
-
-  trackByDocId(index: number, doc: Document): string {
-    return doc.id;
-  }
+  trackById(_index: number, doc: Document): string { return doc.id; }
 }

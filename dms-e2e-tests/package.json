@@ -1,0 +1,15 @@
+{
+  "name": "dms-e2e-tests",
+  "version": "1.0.0",
+  "description": "DMS End-to-End Tests using Playwright",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.0",
+    "@axe-core/playwright": "^4.10.0"
+  }
+}

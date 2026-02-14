@@ -1,0 +1,41 @@
+# Test profile - H2 in-memory database
+spring:
+  autoconfigure:
+    exclude:
+      - com.azure.spring.cloud.autoconfigure.implementation.keyvault.secrets.AzureKeyVaultSecretAutoConfiguration
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  flyway:
+    enabled: false
+  
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          enabled: false
+
+server:
+  port: 0
+
+security:
+  bypass-auth: true
+
+azure:
+  tenant-id: ""
+  client-id: ""
+  jwk-set-uri: ""
+  event-hubs:
+    connection-string: ""
+    hub-name: audit-logs

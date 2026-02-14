@@ -94,7 +94,7 @@ The tests use the Page Object Model (POM) pattern:
 ## Running Tests
 
 ### Prerequisites
-- Java 25 LTS
+- Java 21 LTS
 - Maven 3.8+
 - Chrome or Firefox browser
 - DMS services running

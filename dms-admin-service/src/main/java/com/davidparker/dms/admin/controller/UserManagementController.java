@@ -11,11 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/users")
 @PreAuthorize("hasRole('DMS.Admin')")
+@Tag(name = "User Management", description = "CRUD operations for user accounts")
 public class UserManagementController {
 
     private final UserManagementService userManagementService;
@@ -25,6 +29,7 @@ public class UserManagementController {
     }
 
     @GetMapping
+    @Operation(summary = "List users", description = "Get paginated list of all users")
     public ResponseEntity<Page<User>> listUsers(Pageable pageable) {
         return ResponseEntity.ok(userManagementService.listUsers(pageable));
     }
@@ -35,6 +40,7 @@ public class UserManagementController {
     }
 
     @PostMapping
+    @Operation(summary = "Create user", description = "Create a new user account")
     public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateRequest request) {
         return ResponseEntity.ok(userManagementService.createUser(request));
     }

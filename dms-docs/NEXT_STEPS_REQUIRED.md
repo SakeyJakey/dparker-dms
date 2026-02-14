@@ -7,10 +7,10 @@ Updated By: davidparker-lv-bmth
 
 ## Critical Requirements
 
-### 1. Install Java 25 ⚠️ REQUIRED
+### 1. Install Java 21 ⚠️ REQUIRED
 
 **Current Status**: System has Java 22, 12, and 1.8 installed
-**Required**: Java 25 LTS
+**Required**: Java 21 LTS
 
 **Installation Options**:
 
@@ -20,16 +20,16 @@ Updated By: davidparker-lv-bmth
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-# Install Java 25
-sdk install java 25.0.1-tem
+# Install Java 21
+sdk install java 21.0.1-tem
 
 # Set as default
-sdk default java 25.0.1-tem
+sdk default java 21.0.1-tem
 ```
 
 #### Option B: Using Homebrew
 ```bash
-# Install Java 25 (if available)
+# Install Java 21 (if available)
 brew install openjdk@25
 
 # Set JAVA_HOME
@@ -37,7 +37,7 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 25)
 ```
 
 #### Option C: Manual Download
-1. Download Java 25 from Oracle or Adoptium
+1. Download Java 21 from Oracle or Adoptium
 2. Install to `/Library/Java/JavaVirtualMachines/`
 3. Set JAVA_HOME:
    ```bash
@@ -79,7 +79,7 @@ java -version
 
 ### 3. Re-run Verification Steps
 
-Once Java 25 is installed:
+Once Java 21 is installed:
 
 ```bash
 # Step 1: Maven Build
@@ -118,8 +118,8 @@ mvn clean test
 - Services configured correctly
 
 ### ⚠️ Blocked By Environment
-- Maven build: Requires Java 25
-- Tests: Requires Java 25 for Mockito compatibility
+- Maven build: Requires Java 21
+- Tests: Requires Java 21 for Mockito compatibility
 - Coverage reports: Blocked by test execution
 
 ### ✅ Working
@@ -127,14 +127,14 @@ mvn clean test
 - Service configurations: Correct
 - Health check endpoints: Configured correctly
 
-## Expected Results After Java 25 Installation
+## Expected Results After Java 21 Installation
 
 ### Maven Build
 - ✅ Should compile successfully
 - ✅ Should create JAR files in `*/target/`
 
 ### Tests
-- ✅ Mockito 5.20.0 should work with Java 25
+- ✅ Mockito 5.20.0 should work with Java 21
 - ✅ All 38+ tests should pass
 - ✅ Coverage reports should generate
 
@@ -148,9 +148,9 @@ mvn clean test
 
 ## Verification Checklist
 
-After installing Java 25 and fixing frontend:
+After installing Java 21 and fixing frontend:
 
-- [ ] Java 25 installed and verified (`java -version`)
+- [ ] Java 21 installed and verified (`java -version`)
 - [ ] Maven build succeeds (`mvn clean package -DskipTests`)
 - [ ] All tests pass (`mvn clean test`)
 - [ ] Coverage reports generated (`mvn jacoco:report`)
@@ -165,4 +165,4 @@ After installing Java 25 and fixing frontend:
 - The codebase is correctly configured
 - All implementation is complete
 - Issues are purely environment-related (Java version)
-- Once Java 25 is installed, all verification steps should pass
+- Once Java 21 is installed, all verification steps should pass

@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.davidparker.dms.admin.exception.ResourceNotFoundException;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class UserManagementService {
     @PreAuthorize("hasRole('DMS.Admin')")
     public User getUser(UUID id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
     }
 
     @PreAuthorize("hasRole('DMS.Admin')")
@@ -75,7 +77,7 @@ public class UserManagementService {
     @Transactional
     public User updateUser(UUID id, UserUpdateRequest request) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
 
         if (request.getEmail() != null) {
             user.setEmail(request.getEmail());
@@ -103,7 +105,7 @@ public class UserManagementService {
     @Transactional
     public void deleteUser(UUID id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
 
         userRepository.delete(user);
 
@@ -122,9 +124,9 @@ public class UserManagementService {
     @Transactional
     public User assignRole(UUID userId, UUID roleId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", userId.toString()));
         Role role = roleRepository.findById(roleId)
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", roleId.toString()));
 
         user.getRoles().add(role);
         user = userRepository.save(user);
@@ -147,7 +149,7 @@ public class UserManagementService {
     @Transactional
     public User removeRole(UUID userId, UUID roleId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", userId.toString()));
 
         user.getRoles().removeIf(role -> role.getId().equals(roleId));
         user = userRepository.save(user);
@@ -169,7 +171,7 @@ public class UserManagementService {
     @Transactional
     public User enableUser(UUID id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
         user.setEnabled(true);
         return userRepository.save(user);
     }
@@ -178,7 +180,7 @@ public class UserManagementService {
     @Transactional
     public User disableUser(UUID id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
         user.setEnabled(false);
         return userRepository.save(user);
     }

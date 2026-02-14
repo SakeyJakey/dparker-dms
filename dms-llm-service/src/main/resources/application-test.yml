@@ -1,0 +1,31 @@
+# Test profile
+spring:
+  autoconfigure:
+    exclude:
+      - com.azure.spring.cloud.autoconfigure.implementation.keyvault.secrets.AzureKeyVaultSecretAutoConfiguration
+  
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          enabled: false
+
+server:
+  port: 0
+
+security:
+  bypass-auth: true
+
+azure:
+  ai:
+    search:
+      endpoint: ""
+      api-key: ""
+    openai:
+      endpoint: ""
+      api-key: ""
+
+dms:
+  services:
+    audit-service-url: http://localhost:9999
+    document-service-url: http://localhost:9998

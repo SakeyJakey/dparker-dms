@@ -2,25 +2,35 @@ package com.davidparker.dms.llm.controller;
 
 import com.davidparker.dms.llm.dto.LlmQueryRequest;
 import com.davidparker.dms.llm.dto.LlmQueryResponse;
+import com.davidparker.dms.llm.service.QueryHistoryService;
 import com.davidparker.dms.llm.service.SecureLlmQueryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(LlmQueryController.class)
+@WebMvcTest(controllers = LlmQueryController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
+@ContextConfiguration(classes = {LlmQueryController.class})
+@ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "spring.cloud.azure.keyvault.secret.enabled=false",
+    "spring.cloud.azure.keyvault.secret.property-sources[0].enabled=false"
+})
 class LlmQueryControllerTest {
 
     @Autowired
@@ -29,48 +39,55 @@ class LlmQueryControllerTest {
     @MockBean
     private SecureLlmQueryService llmQueryService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @MockBean
+    private QueryHistoryService queryHistoryService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    @WithMockUser(roles = "DMS.LLM.Service")
     void testExecuteQuery() throws Exception {
         LlmQueryRequest request = new LlmQueryRequest();
         request.setQuery("What documents contain PCI data?");
 
         LlmQueryResponse response = LlmQueryResponse.builder()
             .correlationId(UUID.randomUUID())
-            .summary("Found 5 documents")
+            .summary("Found 3 documents with PCI data")
+            .results(List.of())
+            .totalCount(3)
             .build();
 
         when(llmQueryService.executeQuery(any(LlmQueryRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/llm/query")
-                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.summary").value("Found 5 documents"));
+            .andExpect(jsonPath("$.correlationId").exists())
+            .andExpect(jsonPath("$.summary").value("Found 3 documents with PCI data"));
+
+        verify(llmQueryService).executeQuery(any(LlmQueryRequest.class));
     }
 
     @Test
-    @WithMockUser(roles = "DMS.LLM.Service")
     void testComplianceCheck() throws Exception {
         LlmQueryRequest request = new LlmQueryRequest();
-        request.setQuery("Check compliance for document");
+        request.setQuery("Check compliance status for Q4");
 
         LlmQueryResponse response = LlmQueryResponse.builder()
             .correlationId(UUID.randomUUID())
             .summary("Compliance check completed")
+            .results(List.of())
+            .totalCount(0)
             .build();
 
         when(llmQueryService.executeQuery(any(LlmQueryRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/llm/compliance-check")
-                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.summary").value("Compliance check completed"));
+
+        verify(llmQueryService).executeQuery(any(LlmQueryRequest.class));
     }
 }

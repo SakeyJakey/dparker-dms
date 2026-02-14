@@ -10,11 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/applications")
 @PreAuthorize("hasRole('DMS.Admin')")
+@Tag(name = "Application Management", description = "Provision and manage registered applications")
 public class ApplicationManagementController {
 
     private final ApplicationManagementService applicationManagementService;

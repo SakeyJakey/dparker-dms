@@ -1,12 +1,17 @@
-# Development profile
+# Dev profile - no database, auth bypassed
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+
 server:
   port: 8084
 
-# Bypass authentication in dev mode
 security:
   bypass-auth: true
 
 logging:
   level:
     com.davidparker.dms.compliance: DEBUG
-    org.springframework.security: DEBUG

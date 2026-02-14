@@ -1,5 +1,5 @@
 ---
-Last Updated: 2025-01-18T00:00:00Z
+Last Updated: 2026-02-14T17:00:00Z
 Updated By: davidparker-lv-bmth
 ---
 
@@ -704,7 +704,7 @@ Each service has three Dockerfile variants:
 
 | Component | Technology |
 |-----------|-----------|
-| **Language** | Java 25 LTS |
+| **Language** | Java 21 LTS |
 | **Framework** | Spring Boot 3.4.x |
 | **Frontend** | Angular 21 |
 | **Database** | PostgreSQL 16.x |

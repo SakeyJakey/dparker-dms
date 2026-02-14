@@ -1,5 +1,12 @@
 # Test profile - H2 in-memory database
 spring:
+  autoconfigure:
+    exclude:
+      - com.azure.spring.cloud.autoconfigure.implementation.keyvault.secrets.AzureKeyVaultSecretAutoConfiguration
+      - com.azure.spring.cloud.autoconfigure.implementation.storage.blob.AzureBlobStorageAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
@@ -12,10 +19,23 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  
+  flyway:
+    enabled: false
+  
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          enabled: false
 
 server:
-  port: 0  # Random port for tests
+  port: 0
 
-# Bypass authentication in test mode
 security:
   bypass-auth: true
+
+dms:
+  services:
+    audit-service-url: http://localhost:9999
+    document-service-url: http://localhost:9998

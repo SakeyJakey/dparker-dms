@@ -16,7 +16,7 @@ Used for docker-compose and local development.
 **Pattern**:
 ```dockerfile
 # Multi-stage build for Spring Boot service
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
@@ -30,7 +30,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests -B
 
 # Runtime stage
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
@@ -58,7 +58,7 @@ Development Dockerfile - builds within Docker, uses docker profile.
 **Pattern**:
 ```dockerfile
 # Development Dockerfile - builds within Docker
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
@@ -67,7 +67,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests -B
 
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 

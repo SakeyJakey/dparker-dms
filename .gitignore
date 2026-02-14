@@ -54,6 +54,12 @@ application-local.properties
 .env
 .env.local
 
+# Node.js
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+
 # OS
 .DS_Store
 Thumbs.db
