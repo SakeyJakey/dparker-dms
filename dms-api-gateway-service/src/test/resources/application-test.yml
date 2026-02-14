@@ -1,0 +1,10 @@
+server:
+  port: 0
+
+dms:
+  services:
+    admin-service-url: http://localhost:9991
+    audit-service-url: http://localhost:9992
+    document-service-url: http://localhost:9993
+    compliance-service-url: http://localhost:9994
+    llm-service-url: http://localhost:9995

@@ -263,7 +263,7 @@ services:
     environment:
       API_GATEWAY_URL: http://dms-api-gateway-service:8080
     ports:
-      - "8080:8080"
+      - "4200:8080"
     depends_on:
       - dms-api-gateway-service
       - dms-admin-service

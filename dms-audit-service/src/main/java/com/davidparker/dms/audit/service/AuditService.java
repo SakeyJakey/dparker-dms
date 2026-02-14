@@ -23,7 +23,6 @@ public class AuditService {
     private final AuditLogRepository auditLogRepository;
     private final ObjectMapper objectMapper;
     private final EventHubProducerClient eventHubProducerClient;
-    private final MessageDigest sha256Digest;
 
     public AuditService(
             AuditLogRepository auditLogRepository,
@@ -39,12 +38,6 @@ public class AuditService {
                 .buildProducerClient();
         } else {
             this.eventHubProducerClient = null;
-        }
-        
-        try {
-            this.sha256Digest = MessageDigest.getInstance("SHA-256");
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize SHA-256 digest", e);
         }
     }
 
@@ -106,8 +99,10 @@ public class AuditService {
 
     private String calculateChecksum(AuditEvent event) {
         try {
+            // Thread-safe: create a new MessageDigest instance per call
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
             String eventData = objectMapper.writeValueAsString(event);
-            byte[] hash = sha256Digest.digest(eventData.getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest(eventData.getBytes(StandardCharsets.UTF_8));
             
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
