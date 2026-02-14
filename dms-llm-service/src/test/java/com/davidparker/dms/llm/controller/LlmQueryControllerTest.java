@@ -2,6 +2,7 @@ package com.davidparker.dms.llm.controller;
 
 import com.davidparker.dms.llm.dto.LlmQueryRequest;
 import com.davidparker.dms.llm.dto.LlmQueryResponse;
+import com.davidparker.dms.llm.service.QueryHistoryService;
 import com.davidparker.dms.llm.service.SecureLlmQueryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,9 @@ class LlmQueryControllerTest {
 
     @MockBean
     private SecureLlmQueryService llmQueryService;
+
+    @MockBean
+    private QueryHistoryService queryHistoryService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
