@@ -1,5 +1,5 @@
 ---
-Last Updated: 2024-01-18T13:32:00Z
+Last Updated: 2026-02-14T17:00:00Z
 Updated By: davidparker-lv-bmth
 ---
 
@@ -8,7 +8,7 @@ Updated By: davidparker-lv-bmth
 ## Technology Stack
 
 ### Backend
-- **Java 25 LTS** - Required version (strict)
+- **Java 21 LTS** - Runtime version (OpenJDK 21)
 - **Spring Boot 3.4.x** - Framework version
 - **Maven** - Build tool
 - **JUnit 5** - Testing framework

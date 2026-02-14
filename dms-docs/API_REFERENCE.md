@@ -1,5 +1,5 @@
 ---
-Last Updated: 2026-02-14T15:30:00Z
+Last Updated: 2026-02-14T17:00:00Z
 Updated By: davidparker-lv-bmth
 ---
 
@@ -170,6 +170,120 @@ In dev/docker mode, authentication is bypassed.
   "totalCount": 3
 }
 ```
+
+---
+
+## Document Workflow API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/documents/{id}/workflow` | Get current workflow status |
+| GET | `/documents/{id}/workflow/history` | Get workflow history |
+| POST | `/documents/{id}/workflow/transition` | Transition workflow state |
+| POST | `/documents/{id}/workflow/submit-for-review` | Submit for review |
+| POST | `/documents/{id}/workflow/approve` | Approve document |
+| POST | `/documents/{id}/workflow/reject` | Reject document |
+| POST | `/documents/{id}/workflow/publish` | Publish document |
+| POST | `/documents/{id}/workflow/archive` | Archive document |
+
+**Workflow States**: DRAFT → REVIEW → APPROVED → PUBLISHED → ARCHIVED (REJECTED → DRAFT)
+
+---
+
+## Bulk Operations API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/documents/bulk/operation` | Execute bulk action (delete, classify, tag, archive) |
+| POST | `/documents/bulk/upload` | Upload multiple files at once |
+
+---
+
+## Search API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/documents/search` | Advanced search with filters |
+| GET | `/documents/search/fulltext?query=...` | Full-text keyword search |
+
+---
+
+## Collaboration API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/documents/{id}/comments` | Get document comments |
+| POST | `/documents/{id}/comments` | Add comment (supports threading) |
+| DELETE | `/documents/{id}/comments/{commentId}` | Delete comment |
+| GET | `/documents/{id}/shares` | Get document shares |
+| POST | `/documents/{id}/shares` | Share document with user |
+| DELETE | `/documents/{id}/shares/{shareId}` | Revoke share |
+| GET | `/documents/favorites?userId=...` | Get user's favorites |
+| POST | `/documents/{id}/favorites?userId=...` | Add to favorites |
+| DELETE | `/documents/{id}/favorites?userId=...` | Remove from favorites |
+| GET | `/documents/recent?userId=...` | Get recent documents |
+
+---
+
+## Templates API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/documents/templates` | List templates |
+| GET | `/documents/templates/{id}` | Get template |
+| POST | `/documents/templates` | Create template |
+| PUT | `/documents/templates/{id}` | Update template |
+| DELETE | `/documents/templates/{id}` | Delete template |
+
+---
+
+## Preview API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/documents/{id}/preview` | Get document preview |
+| GET | `/documents/{id}/preview/info` | Get preview metadata |
+
+---
+
+## Analytics API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/documents/analytics/dashboard` | Dashboard analytics (stats, trends) |
+
+---
+
+## Webhook Management API (Admin Service)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/webhooks` | List webhooks |
+| POST | `/admin/webhooks` | Create webhook |
+| PUT | `/admin/webhooks/{id}` | Update webhook |
+| DELETE | `/admin/webhooks/{id}` | Delete webhook |
+| POST | `/admin/webhooks/{id}/test` | Test webhook delivery |
+
+---
+
+## API Key Management (Admin Service)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/api-keys` | List API keys |
+| POST | `/admin/api-keys` | Create API key (returns key once) |
+| DELETE | `/admin/api-keys/{id}` | Revoke API key |
+| POST | `/admin/api-keys/{id}/regenerate` | Regenerate API key |
+
+---
+
+## Export API (Admin Service)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/export/users/csv` | Export users as CSV |
+| GET | `/admin/export/audit/csv` | Export audit logs as CSV |
+| GET | `/admin/export/compliance/report?format=csv` | Export compliance report |
 
 ---
 

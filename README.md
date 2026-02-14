@@ -17,7 +17,7 @@ This monorepo contains all DMS services and will be split into individual reposi
 
 ## Technology Stack
 
-- **Java**: 25 LTS
+- **Java**: 21 LTS
 - **Spring Boot**: 3.4.x
 - **Angular**: 21
 - **PostgreSQL**: 16.x
@@ -63,7 +63,7 @@ All services follow LV standard patterns:
    ```
 
 3. **Access services**:
-   - Frontend: http://localhost:8080
+   - Frontend: http://localhost:4200
    - Admin Service: http://localhost:8081
    - Audit Service: http://localhost:8082
    - Document Service: http://localhost:8083
