@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableJpaRepositories("com.davidparker.dms.admin.repository")
 @EnableAsync
 public class AdminServiceApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(AdminServiceApplication.class, args);
     }

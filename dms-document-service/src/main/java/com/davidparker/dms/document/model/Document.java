@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.List;
@@ -36,8 +38,8 @@ public class Document {
     @Builder.Default
     private Boolean pciRelevant = false;
 
-    @Column(name = "gdpr_data_categories", columnDefinition = "TEXT[]")
-    @ElementCollection
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "gdpr_data_categories", columnDefinition = "text[]")
     private List<String> gdprDataCategories;
 
     @Column(name = "retention_until")

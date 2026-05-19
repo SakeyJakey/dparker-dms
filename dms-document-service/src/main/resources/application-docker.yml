@@ -1,13 +1,25 @@
 # Docker Compose profile
 spring:
+  autoconfigure:
+    exclude:
+      - com.azure.spring.cloud.autoconfigure.implementation.storage.blob.AzureBlobStorageAutoConfiguration
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres-document:5432/dms_document}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
-
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          enabled: false
 server:
   port: 8083
+
+dms:
+  storage:
+    blob:
+      use-development-storage: true
 
 # Bypass authentication in docker mode for local testing
 security:

@@ -15,6 +15,7 @@ CREATE TABLE documents (
     updated_by           UUID
 );
 
+
 -- Index for application-scoped queries
 CREATE INDEX idx_documents_application ON documents(application_id);
 CREATE INDEX idx_documents_classification ON documents(classification);

@@ -16,11 +16,11 @@ COPY dms-admin-service/src ./dms-admin-service/src
 
 # Build dms-core-service first
 WORKDIR /app/dms-core-service
-RUN mvn clean install -DskipTests -B
+RUN mvn install -DskipTests -B
 
 # Build the service
 WORKDIR /app/dms-admin-service
-RUN mvn clean package -DskipTests -B
+RUN mvn package -DskipTests -B
 
 # Runtime stage
 FROM eclipse-temurin:21-jre

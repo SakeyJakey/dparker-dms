@@ -6,13 +6,14 @@ spring:
     azure:
       keyvault:
         secret:
-          property-sources:
-            - name: dms-keyvault
-              endpoint: https://dms-keyvault-${ENVIRONMENT:dev}.vault.azure.net
+          enabled: false
       storage:
         blob:
-          account-name: dmsstorage${ENVIRONMENT:dev}
-          account-key: ${storage-account-key-davidparker-lv-bmth}
+          connection-string: ${AZURE_STORAGE_CONNECTION_STRING:}
+          account-name: ${AZURE_STORAGE_ACCOUNT_NAME:dmsstoragedev}
+          account-key: ${storage-account-key-davidparker-lv-bmth:}
+  profiles:
+    default: dev
   
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/dms_document}
@@ -55,8 +56,10 @@ management:
     health:
       show-details: when-authorized
 
-# Service URLs for inter-service communication
 dms:
+  storage:
+    blob:
+      use-development-storage: false
   services:
     admin-service-url: ${ADMIN_SERVICE_URL:http://dms-admin-service:8080}
     audit-service-url: ${AUDIT_SERVICE_URL:http://dms-audit-service:8080}

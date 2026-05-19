@@ -1,11 +1,18 @@
 # Development profile - local development with H2
 spring:
+  autoconfigure:
+    exclude:
+      - com.azure.spring.cloud.autoconfigure.implementation.storage.blob.AzureBlobStorageAutoConfiguration
   datasource:
     url: jdbc:h2:mem:dms_document;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          enabled: false
   h2:
     console:
       enabled: true
@@ -20,6 +27,11 @@ spring:
 
 server:
   port: 8083
+
+dms:
+  storage:
+    blob:
+      use-development-storage: true
 
 # Bypass authentication in dev mode
 security:

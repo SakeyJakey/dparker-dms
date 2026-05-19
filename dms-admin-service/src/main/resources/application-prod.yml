@@ -1,5 +1,13 @@
 # Production profile - Kubernetes deployment
 spring:
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-sources:
+            - name: dms-keyvault
+              endpoint: https://dms-keyvault-${ENVIRONMENT}.vault.azure.net
+
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${DB_USER}

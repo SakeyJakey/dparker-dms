@@ -2,13 +2,16 @@ spring:
   application:
     name: dms-audit-service
   
+  profiles:
+    default: dev
   cloud:
     azure:
       keyvault:
         secret:
-          property-sources:
-            - name: dms-keyvault
-              endpoint: https://dms-keyvault-${ENVIRONMENT:dev}.vault.azure.net
+          enabled: false
+          # property-sources:
+          #   - name: dms-keyvault
+          #     endpoint: https://dms-keyvault-${ENVIRONMENT:dev}.vault.azure.net
   
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/dms_audit}
